@@ -8,163 +8,69 @@
       <stop offset="0%" style="stop-color:#e8a87c"/>
       <stop offset="100%" style="stop-color:#d4845f"/>
     </linearGradient>
+    <linearGradient id="titleFade" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0b88c"/>
+      <stop offset="100%" style="stop-color:#d4845f"/>
+    </linearGradient>
   </defs>
 
   <!-- Background -->
   <rect width="1200" height="480" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Subtle grid -->
   <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
     <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#21262d" stroke-width="0.5"/>
   </pattern>
   <rect width="1200" height="480" fill="url(#grid)" rx="12" opacity="0.3"/>
 
-  <!-- ==================== BLOCK ART: AGENT ==================== -->
-  <!-- 7x5 pixel font, block=15x15, gap=3, pitch=18 -->
-  <!-- col(c)=40+c*18  row(r)=28+r*18 -->
+  <!-- ==================== LEFT SECTION ==================== -->
 
-  <!-- A: cols 0-4 -->
-  <g fill="#e8a87c">
-    <!-- ..#.. --> <rect x="76" y="28" width="15" height="15" rx="2"/>
-    <!-- .#.#. --> <rect x="58" y="46" width="15" height="15" rx="2"/> <rect x="94" y="46" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="40" y="64" width="15" height="15" rx="2"/> <rect x="112" y="64" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="40" y="82" width="15" height="15" rx="2"/> <rect x="112" y="82" width="15" height="15" rx="2"/>
-    <!-- ##### --> <rect x="40" y="100" width="15" height="15" rx="2"/> <rect x="58" y="100" width="15" height="15" rx="2"/> <rect x="76" y="100" width="15" height="15" rx="2"/> <rect x="94" y="100" width="15" height="15" rx="2"/> <rect x="112" y="100" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="40" y="118" width="15" height="15" rx="2"/> <rect x="112" y="118" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="40" y="136" width="15" height="15" rx="2"/> <rect x="112" y="136" width="15" height="15" rx="2"/>
-  </g>
+  <!-- Title: AGENT -->
+  <text x="40" y="140" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="130" fill="url(#titleFade)" font-weight="900" letter-spacing="-2">AGENT</text>
 
-  <!-- G: cols 6-10 -->
-  <g fill="#e8a87c">
-    <!-- .###. --> <rect x="166" y="28" width="15" height="15" rx="2"/> <rect x="184" y="28" width="15" height="15" rx="2"/> <rect x="202" y="28" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="148" y="46" width="15" height="15" rx="2"/> <rect x="220" y="46" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="148" y="64" width="15" height="15" rx="2"/>
-    <!-- #.### --> <rect x="148" y="82" width="15" height="15" rx="2"/> <rect x="184" y="82" width="15" height="15" rx="2"/> <rect x="202" y="82" width="15" height="15" rx="2"/> <rect x="220" y="82" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="148" y="100" width="15" height="15" rx="2"/> <rect x="220" y="100" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="148" y="118" width="15" height="15" rx="2"/> <rect x="220" y="118" width="15" height="15" rx="2"/>
-    <!-- .###. --> <rect x="166" y="136" width="15" height="15" rx="2"/> <rect x="184" y="136" width="15" height="15" rx="2"/> <rect x="202" y="136" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- E: cols 12-16 -->
-  <g fill="#e8a87c">
-    <!-- ##### --> <rect x="256" y="28" width="15" height="15" rx="2"/> <rect x="274" y="28" width="15" height="15" rx="2"/> <rect x="292" y="28" width="15" height="15" rx="2"/> <rect x="310" y="28" width="15" height="15" rx="2"/> <rect x="328" y="28" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="46" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="64" width="15" height="15" rx="2"/>
-    <!-- ####. --> <rect x="256" y="82" width="15" height="15" rx="2"/> <rect x="274" y="82" width="15" height="15" rx="2"/> <rect x="292" y="82" width="15" height="15" rx="2"/> <rect x="310" y="82" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="100" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="118" width="15" height="15" rx="2"/>
-    <!-- ##### --> <rect x="256" y="136" width="15" height="15" rx="2"/> <rect x="274" y="136" width="15" height="15" rx="2"/> <rect x="292" y="136" width="15" height="15" rx="2"/> <rect x="310" y="136" width="15" height="15" rx="2"/> <rect x="328" y="136" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- N: cols 18-22 -->
-  <g fill="#e8a87c">
-    <!-- #...# --> <rect x="364" y="28" width="15" height="15" rx="2"/> <rect x="436" y="28" width="15" height="15" rx="2"/>
-    <!-- ##..# --> <rect x="364" y="46" width="15" height="15" rx="2"/> <rect x="382" y="46" width="15" height="15" rx="2"/> <rect x="436" y="46" width="15" height="15" rx="2"/>
-    <!-- ##..# --> <rect x="364" y="64" width="15" height="15" rx="2"/> <rect x="382" y="64" width="15" height="15" rx="2"/> <rect x="436" y="64" width="15" height="15" rx="2"/>
-    <!-- #.#.# --> <rect x="364" y="82" width="15" height="15" rx="2"/> <rect x="400" y="82" width="15" height="15" rx="2"/> <rect x="436" y="82" width="15" height="15" rx="2"/>
-    <!-- #..## --> <rect x="364" y="100" width="15" height="15" rx="2"/> <rect x="418" y="100" width="15" height="15" rx="2"/> <rect x="436" y="100" width="15" height="15" rx="2"/>
-    <!-- #..## --> <rect x="364" y="118" width="15" height="15" rx="2"/> <rect x="418" y="118" width="15" height="15" rx="2"/> <rect x="436" y="118" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="364" y="136" width="15" height="15" rx="2"/> <rect x="436" y="136" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- T: cols 24-28 -->
-  <g fill="#e8a87c">
-    <!-- ##### --> <rect x="472" y="28" width="15" height="15" rx="2"/> <rect x="490" y="28" width="15" height="15" rx="2"/> <rect x="508" y="28" width="15" height="15" rx="2"/> <rect x="526" y="28" width="15" height="15" rx="2"/> <rect x="544" y="28" width="15" height="15" rx="2"/>
-    <!-- ..#.. --> <rect x="508" y="46" width="15" height="15" rx="2"/>
-    <!-- ..#.. --> <rect x="508" y="64" width="15" height="15" rx="2"/>
-    <!-- ..#.. --> <rect x="508" y="82" width="15" height="15" rx="2"/>
-    <!-- ..#.. --> <rect x="508" y="100" width="15" height="15" rx="2"/>
-    <!-- ..#.. --> <rect x="508" y="118" width="15" height="15" rx="2"/>
-    <!-- ..#.. --> <rect x="508" y="136" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- ==================== BLOCK ART: SPEC ==================== -->
-  <!-- Row 2 starts at y=164 -->
-
-  <!-- S: cols 0-4 -->
-  <g fill="#e8a87c">
-    <!-- .###. --> <rect x="58" y="164" width="15" height="15" rx="2"/> <rect x="76" y="164" width="15" height="15" rx="2"/> <rect x="94" y="164" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="40" y="182" width="15" height="15" rx="2"/> <rect x="112" y="182" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="40" y="200" width="15" height="15" rx="2"/>
-    <!-- .###. --> <rect x="58" y="218" width="15" height="15" rx="2"/> <rect x="76" y="218" width="15" height="15" rx="2"/> <rect x="94" y="218" width="15" height="15" rx="2"/>
-    <!-- ....# --> <rect x="112" y="236" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="40" y="254" width="15" height="15" rx="2"/> <rect x="112" y="254" width="15" height="15" rx="2"/>
-    <!-- .###. --> <rect x="58" y="272" width="15" height="15" rx="2"/> <rect x="76" y="272" width="15" height="15" rx="2"/> <rect x="94" y="272" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- P: cols 6-10 -->
-  <g fill="#e8a87c">
-    <!-- ####. --> <rect x="148" y="164" width="15" height="15" rx="2"/> <rect x="166" y="164" width="15" height="15" rx="2"/> <rect x="184" y="164" width="15" height="15" rx="2"/> <rect x="202" y="164" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="148" y="182" width="15" height="15" rx="2"/> <rect x="220" y="182" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="148" y="200" width="15" height="15" rx="2"/> <rect x="220" y="200" width="15" height="15" rx="2"/>
-    <!-- ####. --> <rect x="148" y="218" width="15" height="15" rx="2"/> <rect x="166" y="218" width="15" height="15" rx="2"/> <rect x="184" y="218" width="15" height="15" rx="2"/> <rect x="202" y="218" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="148" y="236" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="148" y="254" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="148" y="272" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- E: cols 12-16 -->
-  <g fill="#e8a87c">
-    <!-- ##### --> <rect x="256" y="164" width="15" height="15" rx="2"/> <rect x="274" y="164" width="15" height="15" rx="2"/> <rect x="292" y="164" width="15" height="15" rx="2"/> <rect x="310" y="164" width="15" height="15" rx="2"/> <rect x="328" y="164" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="182" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="200" width="15" height="15" rx="2"/>
-    <!-- ####. --> <rect x="256" y="218" width="15" height="15" rx="2"/> <rect x="274" y="218" width="15" height="15" rx="2"/> <rect x="292" y="218" width="15" height="15" rx="2"/> <rect x="310" y="218" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="236" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="256" y="254" width="15" height="15" rx="2"/>
-    <!-- ##### --> <rect x="256" y="272" width="15" height="15" rx="2"/> <rect x="274" y="272" width="15" height="15" rx="2"/> <rect x="292" y="272" width="15" height="15" rx="2"/> <rect x="310" y="272" width="15" height="15" rx="2"/> <rect x="328" y="272" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- C: cols 18-22 -->
-  <g fill="#e8a87c">
-    <!-- .###. --> <rect x="382" y="164" width="15" height="15" rx="2"/> <rect x="400" y="164" width="15" height="15" rx="2"/> <rect x="418" y="164" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="364" y="182" width="15" height="15" rx="2"/> <rect x="436" y="182" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="364" y="200" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="364" y="218" width="15" height="15" rx="2"/>
-    <!-- #.... --> <rect x="364" y="236" width="15" height="15" rx="2"/>
-    <!-- #...# --> <rect x="364" y="254" width="15" height="15" rx="2"/> <rect x="436" y="254" width="15" height="15" rx="2"/>
-    <!-- .###. --> <rect x="382" y="272" width="15" height="15" rx="2"/> <rect x="400" y="272" width="15" height="15" rx="2"/> <rect x="418" y="272" width="15" height="15" rx="2"/>
-  </g>
-
-  <!-- ==================== LEFT: TEXT ELEMENTS ==================== -->
+  <!-- Title: SPEC -->
+  <text x="40" y="270" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="130" fill="url(#titleFade)" font-weight="900" letter-spacing="-2">SPEC</text>
 
   <!-- Accent line -->
-  <rect x="40" y="300" width="420" height="3" fill="url(#accentGrad)" rx="1.5"/>
+  <rect x="40" y="292" width="460" height="3" fill="url(#accentGrad)" rx="1.5"/>
 
   <!-- Subtitle -->
-  <text x="40" y="338" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" fill="#e8a87c" font-weight="600" letter-spacing="0.5">Spec-Driven Data Engineering</text>
+  <text x="40" y="340" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="24" fill="#e8a87c" font-weight="600" letter-spacing="0.5">Spec-Driven Data Engineering</text>
 
   <!-- Stats pills -->
   <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14">
-    <rect x="40" y="358" width="100" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
-    <text x="90" y="377" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">41</tspan> agents</text>
+    <rect x="40" y="360" width="100" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
+    <text x="90" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">41</tspan> agents</text>
 
-    <rect x="152" y="358" width="128" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
-    <text x="216" y="377" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> commands</text>
+    <rect x="152" y="360" width="128" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
+    <text x="216" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> commands</text>
 
-    <rect x="292" y="358" width="140" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
-    <text x="362" y="377" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> KB domains</text>
+    <rect x="292" y="360" width="140" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
+    <text x="362" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> KB domains</text>
   </g>
 
   <!-- 5-phase workflow -->
   <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif">
-    <text x="40" y="420" font-size="11" fill="#484f58" font-weight="bold" letter-spacing="2">5-PHASE SDD WORKFLOW</text>
+    <text x="40" y="424" font-size="11" fill="#484f58" font-weight="bold" letter-spacing="2">5-PHASE SDD WORKFLOW</text>
 
-    <rect x="40" y="432" width="84" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
-    <text x="82" y="450" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">BRAINSTORM</text>
-    <text x="130" y="450" font-size="13" fill="#484f58">&#x2192;</text>
+    <rect x="40" y="436" width="84" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
+    <text x="82" y="454" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">BRAINSTORM</text>
+    <text x="130" y="454" font-size="13" fill="#484f58">&#x2192;</text>
 
-    <rect x="142" y="432" width="64" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
-    <text x="174" y="450" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">DEFINE</text>
-    <text x="212" y="450" font-size="13" fill="#484f58">&#x2192;</text>
+    <rect x="142" y="436" width="64" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
+    <text x="174" y="454" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">DEFINE</text>
+    <text x="212" y="454" font-size="13" fill="#484f58">&#x2192;</text>
 
-    <rect x="224" y="432" width="64" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
-    <text x="256" y="450" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">DESIGN</text>
-    <text x="294" y="450" font-size="13" fill="#484f58">&#x2192;</text>
+    <rect x="224" y="436" width="64" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
+    <text x="256" y="454" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">DESIGN</text>
+    <text x="294" y="454" font-size="13" fill="#484f58">&#x2192;</text>
 
-    <rect x="306" y="432" width="56" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
-    <text x="334" y="450" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">BUILD</text>
-    <text x="368" y="450" font-size="13" fill="#484f58">&#x2192;</text>
+    <rect x="306" y="436" width="56" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
+    <text x="334" y="454" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">BUILD</text>
+    <text x="368" y="454" font-size="13" fill="#484f58">&#x2192;</text>
 
-    <rect x="380" y="432" width="50" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
-    <text x="405" y="450" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">SHIP</text>
+    <rect x="380" y="436" width="50" height="28" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="5"/>
+    <text x="405" y="454" font-size="10" fill="#e8a87c" text-anchor="middle" font-weight="bold">SHIP</text>
   </g>
 
   <!-- ==================== RIGHT: SLASH COMMANDS ==================== -->
