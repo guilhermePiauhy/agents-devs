@@ -1,10 +1,12 @@
 <div align="center">
 
-# AgentSpec
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/banner.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/banner.svg">
+  <img alt="AgentSpec — Spec-Driven Data Engineering" src="assets/banner.svg" width="100%">
+</picture>
 
-## Spec-Driven Development for Data Engineering
-
-Build production data pipelines through a structured 5-phase AI workflow with 41 specialized agents
+<br/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://docs.anthropic.com/en/docs/claude-code)
@@ -24,7 +26,7 @@ Data engineering with AI assistants produces inconsistent results: hallucinated 
 
 ## The Solution
 
-AgentSpec brings **Spec-Driven Development (SDD)** to data engineering on Claude Code — a 5-phase workflow backed by 22 knowledge base domains, 41 specialized agents, and 22 slash commands:
+AgentSpec brings **Spec-Driven Development (SDD)** to data engineering on Claude Code — a 5-phase workflow backed by 22 knowledge base domains, 58 specialized agents, and 21 slash commands:
 
 ```text
 /brainstorm  →  /define  →  /design  →  /build  →  /ship

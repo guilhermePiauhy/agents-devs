@@ -1,0 +1,257 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400" width="1200" height="400">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117"/>
+      <stop offset="100%" style="stop-color:#161b22"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e8a87c"/>
+      <stop offset="100%" style="stop-color:#d4845f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="400" fill="url(#bgGrad)" rx="12"/>
+
+  <!-- Subtle grid -->
+  <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+    <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#21262d" stroke-width="0.5"/>
+  </pattern>
+  <rect width="1200" height="400" fill="url(#grid)" rx="12" opacity="0.3"/>
+
+  <!-- ==================== LEFT: BLOCK ART TITLE ==================== -->
+  <!-- Grid: 13px blocks, 3px gaps = 16px pitch -->
+  <!-- "AGENT" — 5 rows, each letter 5 cols wide, letter gap = 1 col -->
+
+  <!-- ===== A ===== col 0-4 -->
+  <g fill="#e8a87c">
+    <rect x="40"  y="30" width="13" height="13" rx="2"/>  <!-- r0c1 -->
+    <rect x="56"  y="30" width="13" height="13" rx="2"/>  <!-- r0c2 -->
+    <rect x="72"  y="30" width="13" height="13" rx="2"/>  <!-- r0c3 -->
+    <rect x="24"  y="46" width="13" height="13" rx="2"/>  <!-- r1c0 -->
+    <rect x="88"  y="46" width="13" height="13" rx="2"/>  <!-- r1c4 -->
+    <rect x="24"  y="62" width="13" height="13" rx="2"/>  <!-- r2c0 -->
+    <rect x="40"  y="62" width="13" height="13" rx="2"/>  <!-- r2c1 -->
+    <rect x="56"  y="62" width="13" height="13" rx="2"/>  <!-- r2c2 -->
+    <rect x="72"  y="62" width="13" height="13" rx="2"/>  <!-- r2c3 -->
+    <rect x="88"  y="62" width="13" height="13" rx="2"/>  <!-- r2c4 -->
+    <rect x="24"  y="78" width="13" height="13" rx="2"/>  <!-- r3c0 -->
+    <rect x="88"  y="78" width="13" height="13" rx="2"/>  <!-- r3c4 -->
+    <rect x="24"  y="94" width="13" height="13" rx="2"/>  <!-- r4c0 -->
+    <rect x="88"  y="94" width="13" height="13" rx="2"/>  <!-- r4c4 -->
+  </g>
+
+  <!-- ===== G ===== col 6-10 (x starts at 24+6*16=120) -->
+  <g fill="#e8a87c">
+    <rect x="136" y="30" width="13" height="13" rx="2"/>  <!-- r0c1 -->
+    <rect x="152" y="30" width="13" height="13" rx="2"/>  <!-- r0c2 -->
+    <rect x="168" y="30" width="13" height="13" rx="2"/>  <!-- r0c3 -->
+    <rect x="120" y="46" width="13" height="13" rx="2"/>  <!-- r1c0 -->
+    <rect x="120" y="62" width="13" height="13" rx="2"/>  <!-- r2c0 -->
+    <rect x="152" y="62" width="13" height="13" rx="2"/>  <!-- r2c2 -->
+    <rect x="168" y="62" width="13" height="13" rx="2"/>  <!-- r2c3 -->
+    <rect x="184" y="62" width="13" height="13" rx="2"/>  <!-- r2c4 -->
+    <rect x="120" y="78" width="13" height="13" rx="2"/>  <!-- r3c0 -->
+    <rect x="184" y="78" width="13" height="13" rx="2"/>  <!-- r3c4 -->
+    <rect x="136" y="94" width="13" height="13" rx="2"/>  <!-- r4c1 -->
+    <rect x="152" y="94" width="13" height="13" rx="2"/>  <!-- r4c2 -->
+    <rect x="168" y="94" width="13" height="13" rx="2"/>  <!-- r4c3 -->
+    <rect x="184" y="94" width="13" height="13" rx="2"/>  <!-- r4c4 -->
+  </g>
+
+  <!-- ===== E ===== col 12-16 (x starts at 24+12*16=216) -->
+  <g fill="#e8a87c">
+    <rect x="216" y="30" width="13" height="13" rx="2"/>
+    <rect x="232" y="30" width="13" height="13" rx="2"/>
+    <rect x="248" y="30" width="13" height="13" rx="2"/>
+    <rect x="264" y="30" width="13" height="13" rx="2"/>
+    <rect x="280" y="30" width="13" height="13" rx="2"/>
+    <rect x="216" y="46" width="13" height="13" rx="2"/>
+    <rect x="216" y="62" width="13" height="13" rx="2"/>
+    <rect x="232" y="62" width="13" height="13" rx="2"/>
+    <rect x="248" y="62" width="13" height="13" rx="2"/>
+    <rect x="264" y="62" width="13" height="13" rx="2"/>
+    <rect x="216" y="78" width="13" height="13" rx="2"/>
+    <rect x="216" y="94" width="13" height="13" rx="2"/>
+    <rect x="232" y="94" width="13" height="13" rx="2"/>
+    <rect x="248" y="94" width="13" height="13" rx="2"/>
+    <rect x="264" y="94" width="13" height="13" rx="2"/>
+    <rect x="280" y="94" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- ===== N ===== col 18-22 (x starts at 24+18*16=312) -->
+  <g fill="#e8a87c">
+    <rect x="312" y="30" width="13" height="13" rx="2"/>
+    <rect x="376" y="30" width="13" height="13" rx="2"/>
+    <rect x="312" y="46" width="13" height="13" rx="2"/>
+    <rect x="328" y="46" width="13" height="13" rx="2"/>
+    <rect x="376" y="46" width="13" height="13" rx="2"/>
+    <rect x="312" y="62" width="13" height="13" rx="2"/>
+    <rect x="344" y="62" width="13" height="13" rx="2"/>
+    <rect x="376" y="62" width="13" height="13" rx="2"/>
+    <rect x="312" y="78" width="13" height="13" rx="2"/>
+    <rect x="360" y="78" width="13" height="13" rx="2"/>
+    <rect x="376" y="78" width="13" height="13" rx="2"/>
+    <rect x="312" y="94" width="13" height="13" rx="2"/>
+    <rect x="376" y="94" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- ===== T ===== col 24-28 (x starts at 24+24*16=408) -->
+  <g fill="#e8a87c">
+    <rect x="408" y="30" width="13" height="13" rx="2"/>
+    <rect x="424" y="30" width="13" height="13" rx="2"/>
+    <rect x="440" y="30" width="13" height="13" rx="2"/>
+    <rect x="456" y="30" width="13" height="13" rx="2"/>
+    <rect x="472" y="30" width="13" height="13" rx="2"/>
+    <rect x="440" y="46" width="13" height="13" rx="2"/>
+    <rect x="440" y="62" width="13" height="13" rx="2"/>
+    <rect x="440" y="78" width="13" height="13" rx="2"/>
+    <rect x="440" y="94" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- ===== S ===== row2, col 0-4 (y starts at 126) -->
+  <g fill="#e8a87c">
+    <rect x="40"  y="126" width="13" height="13" rx="2"/>
+    <rect x="56"  y="126" width="13" height="13" rx="2"/>
+    <rect x="72"  y="126" width="13" height="13" rx="2"/>
+    <rect x="88"  y="126" width="13" height="13" rx="2"/>
+    <rect x="24"  y="142" width="13" height="13" rx="2"/>
+    <rect x="40"  y="158" width="13" height="13" rx="2"/>
+    <rect x="56"  y="158" width="13" height="13" rx="2"/>
+    <rect x="72"  y="158" width="13" height="13" rx="2"/>
+    <rect x="88"  y="174" width="13" height="13" rx="2"/>
+    <rect x="24"  y="190" width="13" height="13" rx="2"/>
+    <rect x="40"  y="190" width="13" height="13" rx="2"/>
+    <rect x="56"  y="190" width="13" height="13" rx="2"/>
+    <rect x="72"  y="190" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- ===== P ===== row2, col 6-10 -->
+  <g fill="#e8a87c">
+    <rect x="120" y="126" width="13" height="13" rx="2"/>
+    <rect x="136" y="126" width="13" height="13" rx="2"/>
+    <rect x="152" y="126" width="13" height="13" rx="2"/>
+    <rect x="168" y="126" width="13" height="13" rx="2"/>
+    <rect x="120" y="142" width="13" height="13" rx="2"/>
+    <rect x="184" y="142" width="13" height="13" rx="2"/>
+    <rect x="120" y="158" width="13" height="13" rx="2"/>
+    <rect x="136" y="158" width="13" height="13" rx="2"/>
+    <rect x="152" y="158" width="13" height="13" rx="2"/>
+    <rect x="168" y="158" width="13" height="13" rx="2"/>
+    <rect x="120" y="174" width="13" height="13" rx="2"/>
+    <rect x="120" y="190" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- ===== E ===== row2, col 12-16 -->
+  <g fill="#e8a87c">
+    <rect x="216" y="126" width="13" height="13" rx="2"/>
+    <rect x="232" y="126" width="13" height="13" rx="2"/>
+    <rect x="248" y="126" width="13" height="13" rx="2"/>
+    <rect x="264" y="126" width="13" height="13" rx="2"/>
+    <rect x="280" y="126" width="13" height="13" rx="2"/>
+    <rect x="216" y="142" width="13" height="13" rx="2"/>
+    <rect x="216" y="158" width="13" height="13" rx="2"/>
+    <rect x="232" y="158" width="13" height="13" rx="2"/>
+    <rect x="248" y="158" width="13" height="13" rx="2"/>
+    <rect x="264" y="158" width="13" height="13" rx="2"/>
+    <rect x="216" y="174" width="13" height="13" rx="2"/>
+    <rect x="216" y="190" width="13" height="13" rx="2"/>
+    <rect x="232" y="190" width="13" height="13" rx="2"/>
+    <rect x="248" y="190" width="13" height="13" rx="2"/>
+    <rect x="264" y="190" width="13" height="13" rx="2"/>
+    <rect x="280" y="190" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- ===== C ===== row2, col 18-22 -->
+  <g fill="#e8a87c">
+    <rect x="328" y="126" width="13" height="13" rx="2"/>
+    <rect x="344" y="126" width="13" height="13" rx="2"/>
+    <rect x="360" y="126" width="13" height="13" rx="2"/>
+    <rect x="376" y="126" width="13" height="13" rx="2"/>
+    <rect x="312" y="142" width="13" height="13" rx="2"/>
+    <rect x="312" y="158" width="13" height="13" rx="2"/>
+    <rect x="312" y="174" width="13" height="13" rx="2"/>
+    <rect x="328" y="190" width="13" height="13" rx="2"/>
+    <rect x="344" y="190" width="13" height="13" rx="2"/>
+    <rect x="360" y="190" width="13" height="13" rx="2"/>
+    <rect x="376" y="190" width="13" height="13" rx="2"/>
+  </g>
+
+  <!-- Accent line -->
+  <rect x="24" y="218" width="370" height="3" fill="url(#accentGrad)" rx="1.5"/>
+
+  <!-- Subtitle -->
+  <text x="24" y="250" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="21" fill="#e8a87c" font-weight="700" letter-spacing="0.5">Spec-Driven Data Engineering</text>
+
+  <!-- Stats pills -->
+  <g font-family="'Courier New', 'Liberation Mono', monospace" font-size="12">
+    <rect x="24" y="266" width="86" height="24" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="12"/>
+    <text x="67" y="282" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">41</tspan> agents</text>
+
+    <rect x="120" y="266" width="110" height="24" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="12"/>
+    <text x="175" y="282" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> commands</text>
+
+    <rect x="240" y="266" width="124" height="24" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="12"/>
+    <text x="302" y="282" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> KB domains</text>
+  </g>
+
+  <!-- 5-phase workflow -->
+  <g font-family="'Courier New', 'Liberation Mono', monospace">
+    <text x="24" y="318" font-size="10" fill="#484f58" font-weight="bold" letter-spacing="2">5-PHASE SDD WORKFLOW</text>
+
+    <rect x="24" y="328" width="76" height="25" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="4"/>
+    <text x="62" y="345" font-size="9" fill="#e8a87c" text-anchor="middle" font-weight="bold">BRAINSTORM</text>
+
+    <text x="106" y="344" font-size="11" fill="#484f58">&#x2192;</text>
+
+    <rect x="116" y="328" width="56" height="25" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="4"/>
+    <text x="144" y="345" font-size="9" fill="#e8a87c" text-anchor="middle" font-weight="bold">DEFINE</text>
+
+    <text x="178" y="344" font-size="11" fill="#484f58">&#x2192;</text>
+
+    <rect x="188" y="328" width="56" height="25" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="4"/>
+    <text x="216" y="345" font-size="9" fill="#e8a87c" text-anchor="middle" font-weight="bold">DESIGN</text>
+
+    <text x="250" y="344" font-size="11" fill="#484f58">&#x2192;</text>
+
+    <rect x="260" y="328" width="50" height="25" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="4"/>
+    <text x="285" y="345" font-size="9" fill="#e8a87c" text-anchor="middle" font-weight="bold">BUILD</text>
+
+    <text x="316" y="344" font-size="11" fill="#484f58">&#x2192;</text>
+
+    <rect x="326" y="328" width="44" height="25" fill="#1a1f29" stroke="#e8a87c" stroke-width="1.2" rx="4"/>
+    <text x="348" y="345" font-size="9" fill="#e8a87c" text-anchor="middle" font-weight="bold">SHIP</text>
+  </g>
+
+  <!-- Built with Claude Code -->
+  <rect x="24" y="366" width="172" height="22" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="11"/>
+  <circle cx="40" cy="377" r="4" fill="#a371f7"/>
+  <text x="50" y="381" font-family="'Segoe UI', 'Helvetica Neue', Arial, sans-serif" font-size="10" fill="#8b949e">Built with Claude Code</text>
+
+  <!-- ==================== RIGHT: SLASH COMMANDS ==================== -->
+
+  <!-- Dashed separator -->
+  <line x1="490" y1="25" x2="490" y2="385" stroke="#21262d" stroke-width="1.5" stroke-dasharray="4,4"/>
+
+  <!-- SDD Workflow label -->
+  <text x="530" y="55" font-family="'Courier New', 'Liberation Mono', monospace" font-size="11" fill="#484f58" font-weight="bold" letter-spacing="2">SDD WORKFLOW</text>
+
+  <g font-family="'Courier New', 'Liberation Mono', monospace" font-size="22">
+    <text x="1165" y="88" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/brainstorm</tspan> &lt;idea&gt;</text>
+    <text x="1165" y="116" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/define</tspan> &lt;feature&gt;</text>
+    <text x="1165" y="144" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/design</tspan> &lt;feature&gt;</text>
+    <text x="1165" y="172" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/build</tspan> &lt;feature&gt;</text>
+    <text x="1165" y="200" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/ship</tspan> &lt;feature&gt;</text>
+  </g>
+
+  <!-- Data Engineering label -->
+  <text x="530" y="240" font-family="'Courier New', 'Liberation Mono', monospace" font-size="11" fill="#484f58" font-weight="bold" letter-spacing="2">DATA ENGINEERING</text>
+
+  <g font-family="'Courier New', 'Liberation Mono', monospace" font-size="22">
+    <text x="1165" y="268" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/schema</tspan> &lt;model&gt;</text>
+    <text x="1165" y="296" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/pipeline</tspan> &lt;etl&gt;</text>
+    <text x="1165" y="324" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/data-quality</tspan> &lt;sql&gt;</text>
+    <text x="1165" y="352" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/data-contract</tspan> &lt;sla&gt;</text>
+    <text x="1165" y="380" text-anchor="end" fill="#6e7681"><tspan fill="#e8a87c">/lakehouse</tspan> &lt;fmt&gt;</text>
+  </g>
+</svg>
