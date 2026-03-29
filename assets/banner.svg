@@ -40,10 +40,10 @@
   <!-- Stats pills -->
   <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" font-size="14">
     <rect x="40" y="360" width="100" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
-    <text x="90" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">41</tspan> agents</text>
+    <text x="90" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">58</tspan> agents</text>
 
     <rect x="152" y="360" width="128" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
-    <text x="216" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> commands</text>
+    <text x="216" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">29</tspan> commands</text>
 
     <rect x="292" y="360" width="140" height="28" fill="#1a1f29" stroke="#30363d" stroke-width="1" rx="14"/>
     <text x="362" y="379" text-anchor="middle" fill="#8b949e"><tspan fill="#e8a87c" font-weight="bold">22</tspan> KB domains</text>
