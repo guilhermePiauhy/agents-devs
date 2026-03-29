@@ -4,6 +4,49 @@ All notable changes to AgentSpec will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [3.0.0] - 2026-03-29
+
+### Added
+
+- **Claude Code Plugin support**: AgentSpec is now distributable as a proper Claude Code plugin
+- Plugin manifest (`plugin/.claude-plugin/plugin.json`) with marketplace metadata
+- `build-plugin.sh` — build script that packages `.claude/` into plugin format with path rewriting
+- `plugin-extras/` — plugin-only skills, hooks, and scripts not in `.claude/`
+- New skill: `sdd-workflow` — auto-invoked when users discuss feature development workflow
+- New skill: `data-engineering-guide` — auto-invoked when users discuss data engineering tasks
+- `hooks/hooks.json` — SessionStart hook for workspace initialization
+- `scripts/init-workspace.sh` — idempotent workspace directory creator
+- Marketplace configuration for self-hosted distribution
+- Plugin installation method in README alongside legacy `cp -r` method
+
+### Changed
+
+- All internal paths in plugin output rewritten from `.claude/` to `${CLAUDE_PLUGIN_ROOT}/`
+- Skills count increased from 2 to 4 (added sdd-workflow, data-engineering-guide)
+- Version bumped to 3.0.0 (new distribution model)
+
+### Architecture
+
+- `.claude/` remains the source of truth for development
+- `build-plugin.sh` generates `plugin/` directory with proper plugin structure
+- Plugin-only content lives in `plugin-extras/` to survive build clean cycles
+- Workspace-specific paths (features/, reports/, archive/) preserved as project-relative
+
+## [2.1.1] - 2026-03-29
+
+### Added
+
+- Documentation for 8 visual-explainer commands (`/generate-web-diagram`, `/generate-slides`, `/generate-visual-plan`, `/diff-review`, `/plan-review`, `/project-recap`, `/fact-check`, `/share`)
+- Documentation for skills system (2 skills: `visual-explainer`, `excalidraw-diagram`)
+- Skills contribution guide in CONTRIBUTING.md
+
+### Fixed
+
+- Command count corrected from 21 to 29 across all documentation (CLAUDE.md, README, commands/README, docs/reference)
+- Fixed `meeting-analyst` incorrectly listed in Architect category (belongs in Dev) in sdd/README.md and README.md; replaced with `kb-architect`
+- Fixed "23 KB domains" typo in sdd/README.md version history (correct: 22)
+- Removed orphan `lakeflow/_index.yaml` (only domain with its own index file; master `_index.yaml` already covers it)
+
 ## [2.1.0] - 2026-03-26
 
 ### Added

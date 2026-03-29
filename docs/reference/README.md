@@ -2,7 +2,7 @@
 
 Complete catalog of commands, agents, KB domains, templates, and configuration.
 
-## Slash Commands (21 total)
+## Slash Commands (29 total)
 
 ### Workflow Commands (7)
 
@@ -49,6 +49,21 @@ Complete catalog of commands, agents, KB domains, templates, and configuration.
 | Command | Purpose | Input |
 |---------|---------|-------|
 | `/review` | Dual AI code review | `uncommitted`, `committed`, `--base`, `--deep` |
+
+### Visual Explainer Commands (8)
+
+Generate self-contained HTML pages for visual documentation. Powered by the `visual-explainer` skill.
+
+| Command | Purpose | Input |
+|---------|---------|-------|
+| `/generate-web-diagram` | Standalone HTML diagram | Topic or description |
+| `/generate-slides` | Magazine-quality slide deck as HTML | Topic or description |
+| `/generate-visual-plan` | Visual implementation plan with state machines | Feature description or spec |
+| `/diff-review` | Before/after architecture comparison | Branch name or commit hash |
+| `/plan-review` | Current codebase vs. proposed plan | Plan file path |
+| `/project-recap` | Project state, decisions, cognitive debt | Time window (e.g., `2w`, `30d`) |
+| `/fact-check` | Verify document accuracy against codebase | File path |
+| `/share` | Share HTML page via Vercel | File path |
 
 ---
 
@@ -258,6 +273,17 @@ All templates live in `.claude/kb/_templates/`:
 | `domain-manifest.yaml.template` | Domain metadata and file registry |
 | `spec.yaml.template` | Machine-readable specifications |
 | `test-case.json.template` | Validation test cases |
+
+---
+
+## Skills (2 total)
+
+Skills are reusable capability packs in `.claude/skills/` that provide templates, references, and scripts for specialized generation tasks.
+
+| Skill | Description | Commands |
+|-------|-------------|----------|
+| `visual-explainer` | Self-contained HTML pages for diagrams, slides, reviews, and recaps | 8 visual-explainer commands |
+| `excalidraw-diagram` | Excalidraw JSON files for workflow and architecture visualization | Invoked directly |
 
 ---
 

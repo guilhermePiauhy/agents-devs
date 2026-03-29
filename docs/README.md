@@ -14,7 +14,7 @@
 | Guide | Description |
 |-------|-------------|
 | [Tutorials](tutorials/) | dbt, star schema, data quality, Spark, streaming, RAG walkthroughs |
-| [Reference](reference/) | Full catalog: 58 agents, 21 commands, 22 KB domains |
+| [Reference](reference/) | Full catalog: 58 agents, 29 commands, 22 KB domains, 2 skills |
 
 ## Data Engineering Quick Links
 
@@ -26,9 +26,9 @@
 
 - [SDD Workflow](../.claude/sdd/architecture/WORKFLOW_CONTRACTS.yaml) -- Phase transition rules
 - [All Agents](../.claude/agents/README.md) -- 58 agents across 8 categories
-- [All Commands](../.claude/commands/README.md) -- 21 slash commands
+- [All Commands](../.claude/commands/README.md) -- 29 slash commands
 
 ## Need Help?
 
-- [GitHub Issues](https://github.com/luanmorenomaciel/agentspec/issues) -- Bug reports
-- [Discussions](https://github.com/luanmorenomaciel/agentspec/discussions) -- Questions and ideas
+- [GitHub Issues](https://github.com/luanmorenommaciel/agentspec/issues) -- Bug reports
+- [Discussions](https://github.com/luanmorenommaciel/agentspec/discussions) -- Questions and ideas

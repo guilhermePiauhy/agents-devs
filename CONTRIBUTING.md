@@ -12,7 +12,8 @@ git checkout -b feature/your-feature
 
 # The framework lives in .claude/
 ls .claude/agents/      # 58 specialized agents
-ls .claude/commands/    # 21 slash commands
+ls .claude/commands/    # 29 slash commands
+ls .claude/skills/      # 2 capability packs (+ 2 plugin-only skills)
 ls .claude/sdd/         # SDD framework
 ls .claude/kb/          # Knowledge Base
 ```
@@ -24,6 +25,7 @@ ls .claude/kb/          # Knowledge Base
 | New Agent      | `.claude/agents/{category}/`   | [Adding Agents](#adding-a-new-agent)     |
 | New KB Domain  | `.claude/kb/{domain}/`         | [Adding KB Domains](#adding-a-kb-domain) |
 | New Command    | `.claude/commands/{category}/` | [Adding Commands](#adding-a-command)     |
+| New Skill      | `.claude/skills/{skill}/`      | [Adding Skills](#adding-a-skill)         |
 | Bug Fix        | Any file                       | [Bug Fixes](#bug-fixes)                  |
 | Documentation  | `docs/`                        | [Docs Guide](#documentation)             |
 
@@ -96,6 +98,20 @@ Templates are in `.claude/kb/_templates/`. Register your domain in `.claude/kb/_
 3. Reference the appropriate agent if applicable
 4. Test: `claude> /your-command`
 
+## Adding a Skill
+
+Skills are reusable capability packs that power slash commands with templates, references, and scripts.
+
+1. Create a directory: `.claude/skills/your-skill/`
+2. Add a `SKILL.md` with YAML frontmatter (`name`, `description`)
+3. Add supporting files:
+   - `references/` — reference docs and patterns
+   - `templates/` — output templates
+   - `scripts/` — automation scripts (optional)
+4. Create corresponding commands in `.claude/commands/your-skill/`
+
+See existing skills (`visual-explainer`, `excalidraw-diagram`) for examples.
+
 ## Bug Fixes
 
 1. Check [existing issues](https://github.com/luanmorenommaciel/agentspec/issues)
@@ -120,6 +136,35 @@ Templates are in `.claude/kb/_templates/`. Register your domain in `.claude/kb/_
    - Clear title (e.g., "Add redis KB domain" or "Fix brainstorm agent quality gate")
    - Description of what changed and why
    - Link to related issue if applicable
+
+## Plugin Development
+
+AgentSpec is distributed as a Claude Code plugin. The development workflow:
+
+1. **Develop in `.claude/`** — this is the source of truth
+2. **Build the plugin** — run `bash build-plugin.sh` to generate `plugin/`
+3. **Test locally** — run `claude --plugin-dir ./plugin`
+4. **Iterate** — make changes in `.claude/`, rebuild, reload with `/reload-plugins`
+
+### Key Concepts
+
+- **`.claude/`** contains agents, commands, skills, KB, SDD — your development environment
+- **`plugin/`** is the generated distributable (built from `.claude/` by the build script)
+- **`plugin-extras/`** contains plugin-only content (new skills, hooks, scripts) that don't belong in `.claude/`
+- **`build-plugin.sh`** copies `.claude/` → `plugin/`, rewrites `.claude/` paths to `${CLAUDE_PLUGIN_ROOT}/`, then merges `plugin-extras/`
+
+### Path Convention
+
+In `.claude/` (source), reference paths as `.claude/kb/dbt/index.md`.
+In plugin output, these become `${CLAUDE_PLUGIN_ROOT}/kb/dbt/index.md`.
+Workspace output paths (`.claude/sdd/features/`, `.claude/sdd/reports/`, `.claude/sdd/archive/`) stay as-is — they point to the user's project.
+
+### Adding Plugin-Only Content
+
+If you create something that only exists in the plugin (not in `.claude/`), add it to `plugin-extras/`:
+- New skills → `plugin-extras/skills/{skill-name}/SKILL.md`
+- Hooks → `plugin-extras/hooks/hooks.json`
+- Scripts → `plugin-extras/scripts/{script-name}.sh`
 
 ## Code of Conduct
 

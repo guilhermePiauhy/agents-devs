@@ -6,9 +6,9 @@
 
 ## Project Context
 
-**What is AgentSpec?** A Claude Code plugin that provides structured AI-assisted development through a 5-phase SDD workflow, specialized for data engineering with 58 agents, 21 commands, and 22 KB domains.
+**What is AgentSpec?** A Claude Code plugin that provides structured AI-assisted development through a 5-phase SDD workflow, specialized for data engineering with 58 agents, 29 commands, 22 KB domains, and 2 skills.
 
-**Current Status:** v2.1.0 — Data engineering pivot complete with multi-cloud coverage. Linear is the project tracker (source of truth).
+**Current Status:** v3.0.0 — Claude Code plugin distribution complete. Linear is the project tracker (source of truth).
 
 ---
 
@@ -27,12 +27,17 @@ agentspec/
 │   │   ├── dev/             # 4 developer tools & productivity
 │   │   └── workflow/        # 6 SDD phase agents
 │   │
-│   ├── commands/            # 21 slash commands
+│   ├── commands/            # 29 slash commands
 │   │   ├── workflow/        # SDD commands (7)
 │   │   ├── data-engineering/ # DE commands (8)
 │   │   ├── core/            # Utility commands (4)
 │   │   ├── knowledge/       # KB commands (1)
-│   │   └── review/          # Review commands (1)
+│   │   ├── review/          # Review commands (1)
+│   │   └── visual-explainer/ # Visual documentation commands (8)
+│   │
+│   ├── skills/              # Reusable capability packs
+│   │   ├── visual-explainer/ # HTML page generation (templates, references, scripts)
+│   │   └── excalidraw-diagram/ # Excalidraw JSON generation
 │   │
 │   ├── sdd/                 # SDD framework
 │   │   ├── architecture/    # WORKFLOW_CONTRACTS.yaml, ARCHITECTURE.md
@@ -73,6 +78,22 @@ agentspec/
 │   ├── tutorials/           # dbt, star schema, Spark, streaming tutorials
 │   └── reference/           # Full catalog: agents, commands, KB domains
 │
+├── plugin/                  # Generated plugin (built by build-plugin.sh)
+│   ├── .claude-plugin/      # Plugin manifest + marketplace config
+│   ├── agents/              # Copied + path-rewritten agents
+│   ├── commands/            # Copied + path-rewritten commands
+│   ├── skills/              # 4 skills (2 from .claude/ + 2 plugin-only)
+│   ├── kb/                  # Copied KB domains
+│   ├── sdd/                 # Templates + architecture (no features/reports/archive)
+│   ├── hooks/               # SessionStart workspace init
+│   └── scripts/             # init-workspace.sh
+│
+├── plugin-extras/           # Plugin-only content (merged into plugin/ by build)
+│   ├── skills/              # sdd-workflow, data-engineering-guide
+│   ├── hooks/               # hooks.json
+│   └── scripts/             # init-workspace.sh
+│
+├── build-plugin.sh          # Builds plugin/ from .claude/
 ├── CHANGELOG.md             # Version history
 ├── CONTRIBUTING.md          # Contribution guide
 ├── SECURITY.md              # Security policy
@@ -121,7 +142,7 @@ Data engineering example:
 
 | Task | Status | Description |
 |------|--------|-------------|
-| Data engineering pivot | Done | 22 KB domains, 58 agents (8 categories), 21 commands |
+| Data engineering pivot | Done | 22 KB domains, 58 agents (8 categories), 29 commands |
 | Adapt existing agents for DE | Done | code-reviewer, code-cleaner, test-generator, design, define, build |
 | Adapt SDD templates for DE | Done | BRAINSTORM, DEFINE, DESIGN, BUILD_REPORT templates |
 | Documentation overhaul | Done | Getting started, concepts, tutorials, reference, README |
@@ -194,6 +215,19 @@ Data engineering example:
 | `/sync-context` | Update CLAUDE.md |
 | `/readme-maker` | Generate README |
 
+### Visual Explainer (8)
+
+| Command | Purpose |
+|---------|---------|
+| `/generate-web-diagram` | Standalone HTML diagram |
+| `/generate-slides` | Magazine-quality slide deck as HTML |
+| `/generate-visual-plan` | Visual implementation plan |
+| `/diff-review` | Before/after architecture comparison |
+| `/plan-review` | Current codebase vs. proposed plan |
+| `/project-recap` | Project state and cognitive debt |
+| `/fact-check` | Verify document accuracy against codebase |
+| `/share` | Share HTML page via Vercel |
+
 ---
 
 ## Key Files to Know
@@ -211,11 +245,13 @@ Data engineering example:
 | `.claude/agents/python/` | Python dev, code quality, prompt engineering |
 | `.claude/agents/test/` | Testing, data quality, data contracts |
 | `.claude/agents/dev/` | Prompt crafter, codebase explorer, shell scripts, meeting analyst |
+| `.claude/skills/visual-explainer/` | HTML generation skill (templates, CSS patterns, scripts) |
+| `.claude/skills/excalidraw-diagram/` | Excalidraw JSON generation skill |
 
 ---
 
 ## Version
 
-- **Version:** 2.1.0
+- **Version:** 3.0.0
 - **Status:** Release
-- **Last Updated:** 2026-03-26
+- **Last Updated:** 2026-03-29

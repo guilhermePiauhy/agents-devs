@@ -9,155 +9,138 @@
 <br/>
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Claude Code](https://img.shields.io/badge/Claude%20Code-Compatible-purple.svg)](https://docs.anthropic.com/en/docs/claude-code)
-[![Version](https://img.shields.io/badge/version-2.1.0-green.svg)](CHANGELOG.md)
+[![Claude Code Plugin](https://img.shields.io/badge/Claude%20Code-Plugin-blueviolet.svg)](plugin/)
+[![Version](https://img.shields.io/badge/version-3.0.0-green.svg)](CHANGELOG.md)
 [![Agents](https://img.shields.io/badge/agents-58-orange.svg)](.claude/agents/)
 [![KB Domains](https://img.shields.io/badge/KB%20domains-22-blue.svg)](.claude/kb/)
+[![Commands](https://img.shields.io/badge/commands-29-brightgreen.svg)](.claude/commands/)
 
-[Quick Start](#quick-start) | [Data Engineering](#data-engineering-commands) | [Documentation](docs/) | [Contributing](CONTRIBUTING.md)
+**A single AI agent reviewing your pipeline will miss things.<br/>58 specialized agents debating your pipeline will catch them.**
+
+[Install](#install) | [Quick Start](#quick-start) | [Commands](#which-command-do-i-need) | [Documentation](docs/) | [Contributing](CONTRIBUTING.md)
 
 </div>
 
 ---
 
-## The Problem
+## Why AgentSpec?
 
 Data engineering with AI assistants produces inconsistent results: hallucinated SQL, wrong partition strategies, missing quality checks, and pipelines that work in dev but break in production. Each conversation starts from scratch without accumulated domain knowledge.
 
-## The Solution
-
-AgentSpec brings **Spec-Driven Development (SDD)** to data engineering on Claude Code — a 5-phase workflow backed by 22 knowledge base domains, 58 specialized agents, and 21 slash commands:
+**AgentSpec fixes this.** It's a Claude Code plugin that gives every session access to 22 knowledge base domains, 58 specialized agents, and a 5-phase workflow that turns vague requirements into production-ready data pipelines — with quality gates at every step.
 
 ```text
 /brainstorm  →  /define  →  /design  →  /build  →  /ship
   (Explore)    (Capture)   (Architect)  (Execute)  (Archive)
-                   │            │            │
-              Data Contract  Pipeline    dbt build
-              Schema SLAs    DAG Design  sqlfluff lint
-              Source Inventory Partitions  GE suite run
+       │            │            │            │
+  Compare      Data Contract  Pipeline    dbt build
+  approaches   Schema SLAs    DAG Design  sqlfluff lint
+               Source Inventory Partitions  GE suite run
 ```
 
-Every phase now understands data engineering context: source inventories, freshness SLAs, schema contracts, partition strategies, and data quality gates.
+Every phase understands data engineering context: source inventories, freshness SLAs, schema contracts, partition strategies, and data quality gates.
+
+---
+
+## Install
+
+### Plugin (Recommended)
+
+```bash
+# Add the AgentSpec marketplace and install
+claude plugin marketplace add luanmorenommaciel/agentspec
+claude plugin install agentspec
+```
+
+That's it. Every Claude Code session now has AgentSpec. Updates are one command:
+
+```bash
+claude plugin update agentspec
+```
+
+### Local Testing
+
+```bash
+git clone https://github.com/luanmorenommaciel/agentspec.git
+claude --plugin-dir ./agentspec/plugin
+```
+
+### Legacy (Copy)
+
+```bash
+git clone https://github.com/luanmorenommaciel/agentspec.git
+cp -r agentspec/.claude your-project/.claude
+```
 
 ---
 
 ## Quick Start
 
-### Install
-
-```bash
-# Clone AgentSpec
-git clone https://github.com/luanmorenommaciel/agentspec.git
-
-# Copy the framework into your project
-cp -r agentspec/.claude your-project/.claude
-```
-
-### Build Your First Data Pipeline
+### Build a Data Pipeline in 5 Steps
 
 ```bash
 # 1. Explore the approach
-claude> /brainstorm "Daily orders pipeline from Postgres to Snowflake star schema"
+/agentspec:brainstorm "Daily orders pipeline from Postgres to Snowflake star schema"
 
 # 2. Capture requirements with data contracts
-claude> /define ORDERS_PIPELINE
+/agentspec:define ORDERS_PIPELINE
 
-# 3. Design with pipeline architecture (DAG, partitions, incremental strategy)
-claude> /design ORDERS_PIPELINE
+# 3. Design the pipeline architecture (DAG, partitions, incremental strategy)
+/agentspec:design ORDERS_PIPELINE
 
 # 4. Build with dbt + quality verification
-claude> /build ORDERS_PIPELINE
+/agentspec:build ORDERS_PIPELINE
 
 # 5. Archive with lessons learned
-claude> /ship ORDERS_PIPELINE
+/agentspec:ship ORDERS_PIPELINE
 ```
 
-### Or Use Data Engineering Commands Directly
+### Or Jump Straight to What You Need
 
 ```bash
-# Design a star schema
-claude> /schema "Star schema for e-commerce analytics"
-
-# Scaffold an Airflow DAG
-claude> /pipeline "Daily orders ETL from Postgres to Snowflake"
-
-# Generate quality checks
-claude> /data-quality models/staging/stg_orders.sql
-
-# Review SQL for anti-patterns
-claude> /sql-review models/marts/
-
-# Create a data contract
-claude> /data-contract "Contract between orders team and analytics"
-
-# Migrate legacy ETL
-claude> /migrate legacy/etl_orders_proc.sql
+/agentspec:schema "Star schema for e-commerce analytics"
+/agentspec:pipeline "Daily orders ETL from Postgres to Snowflake"
+/agentspec:data-quality models/staging/stg_orders.sql
+/agentspec:sql-review models/marts/
 ```
 
 ---
 
-## What You Get
+## Which Command Do I Need?
 
-### 5-Phase Workflow with Quality Gates
+### Data Engineering
 
-| Phase | Command | What It Does | Quality Gate |
-|-------|---------|------|-------|
-| **Brainstorm** | `/brainstorm` | Explore approaches, data flow sketches | 3+ questions, 2+ approaches |
-| **Define** | `/define` | Requirements + data contracts, SLAs | Clarity Score >= 12/15 |
-| **Design** | `/design` | Architecture + pipeline DAG, partitions | Complete manifest + schema plan |
-| **Build** | `/build` | Execute + dbt build, sqlfluff, GE | All tests + quality gates pass |
-| **Ship** | `/ship` | Archive with lessons learned | Acceptance verified |
+| I want to... | Command | Agent |
+|---|---|---|
+| Design a data pipeline / DAG | `/agentspec:pipeline` | pipeline-architect |
+| Design a star schema / data model | `/agentspec:schema` | schema-designer |
+| Add data quality checks | `/agentspec:data-quality` | data-quality-analyst |
+| Optimize slow SQL | `/agentspec:sql-review` | sql-optimizer |
+| Choose Iceberg vs Delta Lake | `/agentspec:lakehouse` | lakehouse-architect |
+| Build a RAG / embedding pipeline | `/agentspec:ai-pipeline` | ai-data-engineer |
+| Create a data contract | `/agentspec:data-contract` | data-contracts-engineer |
+| Migrate legacy SSIS / Informatica | `/agentspec:migrate` | dbt-specialist + spark-engineer |
 
-### 58 Specialized Agents
+### SDD Workflow
 
-| Category | Count | Examples |
-|----------|-------|---------|
-| **Workflow** | 6 | brainstorm, define, design, build, ship, iterate |
-| **Architect** | 8 | schema-designer, pipeline-architect, medallion-architect, lakehouse-architect, genai-architect, the-planner, data-platform-engineer, meeting-analyst |
-| **Cloud** | 10 | aws-data-architect, aws-deployer, aws-lambda-architect, gcp-data-architect, lambda-builder, ci-cd-specialist, supabase-specialist, ai-data-engineer-cloud, ai-data-engineer-gcp, ai-prompt-specialist-gcp |
-| **Platform** | 6 | fabric-architect, fabric-pipeline-developer, fabric-security-specialist, fabric-cicd-specialist, fabric-logging-specialist, fabric-ai-specialist |
-| **Python** | 6 | python-developer, code-reviewer, code-cleaner, code-documenter, llm-specialist, ai-prompt-specialist |
-| **Test** | 3 | test-generator, data-quality-analyst, data-contracts-engineer |
-| **Data Engineering** | 15 | dbt-specialist, spark-engineer, spark-specialist, spark-troubleshooter, spark-performance-analyzer, spark-streaming-architect, sql-optimizer, streaming-engineer, airflow-specialist, lakeflow-specialist, lakeflow-expert, lakeflow-architect, lakeflow-pipeline-builder, ai-data-engineer, qdrant-specialist |
-| **Dev** | 4 | prompt-crafter, codebase-explorer, shell-script-specialist, meeting-analyst |
+| I want to... | Command | What Happens |
+|---|---|---|
+| Explore an idea | `/agentspec:brainstorm` | Compare approaches, ask discovery questions |
+| Capture requirements | `/agentspec:define` | Structured requirements with clarity score |
+| Design architecture | `/agentspec:design` | File manifest + pipeline architecture |
+| Implement the feature | `/agentspec:build` | Auto-delegates to specialist agents |
+| Archive completed work | `/agentspec:ship` | Lessons learned + metrics |
+| Update after changes | `/agentspec:iterate` | Cascade-aware doc updates |
 
-During `/build`, agents are automatically matched to tasks: dbt models go to `dbt-specialist`, Spark jobs to `spark-engineer`, Airflow DAGs to `airflow-specialist`, quality checks to `data-quality-analyst`.
+### Visual & Utilities
 
-### 22 Knowledge Base Domains
-
-| Category | Domains |
-|----------|---------|
-| **Core DE** | `dbt`, `spark`, `sql-patterns`, `airflow`, `streaming` |
-| **Data Design** | `data-modeling`, `data-quality`, `medallion` |
-| **Infrastructure** | `lakehouse`, `lakeflow`, `cloud-platforms`, `terraform` |
-| **Cloud Deep Dives** | `aws`, `gcp`, `microsoft-fabric` |
-| **AI & Prompt** | `ai-data-engineering`, `modern-stack`, `genai`, `prompt-engineering` |
-| **Foundations** | `pydantic`, `python`, `testing` |
-
-### 21 Slash Commands
-
-| Category | Commands |
-|----------|----------|
-| **Workflow** (7) | `/brainstorm`, `/define`, `/design`, `/build`, `/ship`, `/iterate`, `/create-pr` |
-| **Data Engineering** (8) | `/pipeline`, `/schema`, `/data-quality`, `/lakehouse`, `/sql-review`, `/ai-pipeline`, `/data-contract`, `/migrate` |
-| **Core** (4) | `/memory`, `/meeting`, `/sync-context`, `/readme-maker` |
-| **Knowledge** (1) | `/create-kb` |
-| **Review** (1) | `/review` |
-
----
-
-## Data Engineering Commands
-
-| Command | What It Does | Primary Agent |
-|---------|-------------|---------------|
-| `/pipeline` | Scaffold Airflow/Dagster DAGs | pipeline-architect |
-| `/schema` | Design star schemas, Data Vault, SCD | schema-designer |
-| `/data-quality` | Generate GE suites, dbt tests | data-quality-analyst |
-| `/lakehouse` | Iceberg/Delta setup, catalog config | lakehouse-architect |
-| `/sql-review` | SQL anti-patterns, PII detection | code-reviewer + sql-optimizer |
-| `/ai-pipeline` | RAG, embeddings, feature stores | ai-data-engineer |
-| `/data-contract` | ODCS contracts, SLAs | data-contracts-engineer |
-| `/migrate` | Legacy ETL to modern stack | dbt-specialist + spark-engineer |
+| I want to... | Command |
+|---|---|
+| Generate architecture diagrams | `/agentspec:generate-web-diagram` |
+| Create slide decks | `/agentspec:generate-slides` |
+| Review code | `/agentspec:review` |
+| Analyze meeting notes | `/agentspec:meeting` |
+| Create a new KB domain | `/agentspec:create-kb` |
 
 ---
 
@@ -191,65 +174,80 @@ During `/build`, agents are automatically matched to tasks: dbt models go to `db
                                       └────────────┘
 ```
 
-**Agent matching example:** Your DESIGN doc specifies dbt staging models, a PySpark transformation job, and an Airflow DAG — AgentSpec automatically delegates to `dbt-specialist`, `spark-engineer`, and `pipeline-architect` respectively.
+**Agent matching:** Your DESIGN doc specifies dbt staging models, a PySpark job, and an Airflow DAG — AgentSpec automatically delegates to `dbt-specialist`, `spark-engineer`, and `pipeline-architect`.
 
-**Requirements changed?** Use `/iterate` to update any phase document with automatic cascade detection to downstream docs.
+**Requirements changed?** `/agentspec:iterate` updates any phase document with automatic cascade detection to downstream docs.
+
+---
+
+## 58 Agents Across 8 Categories
+
+| Category | Count | What They Do |
+|----------|-------|---|
+| **Workflow** | 6 | Drive the 5-phase SDD lifecycle |
+| **Architect** | 8 | Schema design, pipeline architecture, medallion layers, GenAI systems |
+| **Data Engineering** | 15 | dbt, Spark, Airflow, streaming, Lakeflow, SQL optimization |
+| **Cloud** | 10 | AWS Lambda, GCP Cloud Run, Supabase, CI/CD, Terraform |
+| **Platform** | 6 | Microsoft Fabric (architecture, pipelines, security, AI, logging, CI/CD) |
+| **Python** | 6 | Code review, documentation, cleaning, prompt engineering |
+| **Dev** | 4 | Codebase exploration, shell scripting, meeting analysis |
+| **Test** | 3 | Test generation, data quality, data contracts |
+
+Every agent follows the same cognitive framework: **KB-first knowledge resolution** with confidence scoring, explicit escalation rules, and quality gates.
+
+---
+
+## 22 Knowledge Base Domains
+
+| Category | Domains |
+|----------|---------|
+| **Core DE** | `dbt` `spark` `sql-patterns` `airflow` `streaming` |
+| **Data Design** | `data-modeling` `data-quality` `medallion` |
+| **Infrastructure** | `lakehouse` `lakeflow` `cloud-platforms` `terraform` |
+| **Cloud** | `aws` `gcp` `microsoft-fabric` |
+| **AI & Modern** | `ai-data-engineering` `modern-stack` `genai` `prompt-engineering` |
+| **Foundations** | `pydantic` `python` `testing` |
+
+Agents consult KB domains before responding. When local knowledge is insufficient, they fall back to MCP tools — but KB is always checked first.
+
+---
+
+## 5-Phase Workflow with Quality Gates
+
+| Phase | Command | Output | Gate |
+|-------|---------|--------|------|
+| **0. Brainstorm** | `/agentspec:brainstorm` | `BRAINSTORM_{FEATURE}.md` | 3+ questions, 2+ approaches |
+| **1. Define** | `/agentspec:define` | `DEFINE_{FEATURE}.md` | Clarity Score >= 12/15 |
+| **2. Design** | `/agentspec:design` | `DESIGN_{FEATURE}.md` | Complete manifest + schema plan |
+| **3. Build** | `/agentspec:build` | Code + `BUILD_REPORT_{FEATURE}.md` | All tests pass |
+| **4. Ship** | `/agentspec:ship` | `SHIPPED_{DATE}.md` | Acceptance verified |
 
 ---
 
 ## Project Structure
 
 ```text
-.claude/
-├── agents/              # 58 specialized agents
-│   ├── workflow/        # 6 SDD phase agents
-│   ├── architect/       # 8 system-level design agents
-│   ├── cloud/           # 10 AWS, GCP, CI/CD agents
-│   ├── platform/        # 6 Microsoft Fabric agents
-│   ├── python/          # 6 code quality + prompt agents
-│   ├── test/            # 3 testing + data quality agents
-│   ├── data-engineering/ # 15 DE implementation agents
-│   └── dev/             # 4 developer productivity agents
+agentspec/
+├── .claude/                 # Source of truth (58 agents, 29 commands, 22 KB)
+│   ├── agents/              # 8 categories of specialized agents
+│   ├── commands/            # SDD + DE + visual + core commands
+│   ├── skills/              # visual-explainer, excalidraw-diagram
+│   ├── kb/                  # 22 knowledge base domains
+│   └── sdd/                 # Templates, contracts, features, archive
 │
-├── commands/            # 21 slash commands
-│   ├── workflow/        # SDD phases (7)
-│   ├── data-engineering/ # DE commands (8)
-│   ├── core/            # Utilities (4)
-│   ├── knowledge/       # KB management (1)
-│   └── review/          # Code review (1)
+├── plugin/                  # Distributable Claude Code plugin
+│   ├── .claude-plugin/      # Manifest + marketplace config
+│   ├── agents/              # Path-rewritten agents
+│   ├── commands/            # Path-rewritten commands
+│   ├── skills/              # 4 skills (2 original + 2 plugin-only)
+│   ├── kb/                  # Knowledge base domains
+│   ├── hooks/               # SessionStart workspace init
+│   └── scripts/             # Initialization scripts
 │
-├── sdd/                 # SDD framework
-│   ├── architecture/    # WORKFLOW_CONTRACTS.yaml
-│   ├── templates/       # 5 phase templates (DE-aware)
-│   ├── features/        # Active feature documents
-│   ├── reports/         # Build reports
-│   └── archive/         # Shipped features
-│
-├── kb/                  # Knowledge Base (22 domains)
-│   ├── dbt/             # dbt patterns and concepts
-│   ├── spark/           # PySpark, Spark SQL
-│   ├── sql-patterns/    # SQL best practices
-│   ├── airflow/         # DAG patterns
-│   ├── streaming/       # Flink, Kafka, CDC
-│   ├── data-modeling/   # Star schema, Data Vault, SCD
-│   ├── data-quality/    # GE, Soda, observability
-│   ├── lakehouse/       # Iceberg, Delta, catalogs
-│   ├── cloud-platforms/ # Snowflake, Databricks, BigQuery
-│   ├── ai-data-engineering/ # RAG, vector DBs, features
-│   ├── modern-stack/    # DuckDB, Polars, SQLMesh
-│   ├── aws/             # Lambda, S3, Glue, SAM
-│   ├── gcp/             # Cloud Run, Pub/Sub, BigQuery
-│   ├── microsoft-fabric/ # Lakehouse, Warehouse, Pipelines
-│   ├── lakeflow/        # Databricks Lakeflow (DLT)
-│   ├── medallion/       # Bronze/Silver/Gold layers
-│   ├── prompt-engineering/ # Chain-of-thought, extraction
-│   ├── genai/           # Multi-agent systems, guardrails
-│   ├── pydantic/        # Validation, LLM output schemas
-│   ├── python/          # Python patterns, idioms
-│   ├── testing/         # pytest, CI testing
-│   └── terraform/       # IaC modules, state
-│
-└── docs/                # Documentation
+├── plugin-extras/           # Plugin-only content (merged by build)
+├── build-plugin.sh          # Packages .claude/ into plugin/
+├── docs/                    # Getting started, concepts, tutorials, reference
+└── README.md
 ```
 
 ---
@@ -261,7 +259,7 @@ During `/build`, agents are automatically matched to tasks: dbt models go to `db
 | [Getting Started](docs/getting-started/) | Install and build your first data pipeline |
 | [Core Concepts](docs/concepts/) | SDD pillars through a data engineering lens |
 | [Tutorials](docs/tutorials/) | dbt, star schema, data quality, Spark, streaming, RAG |
-| [Reference](docs/reference/) | Full catalog: 58 agents, 21 commands, 22 KB domains |
+| [Reference](docs/reference/) | Full catalog: 58 agents, 29 commands, 22 KB domains |
 
 ---
 
@@ -270,10 +268,9 @@ During `/build`, agents are automatically matched to tasks: dbt models go to `db
 We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 - **New Agents** — add specialized agents for your domain
-- **KB Domains** — share knowledge base domains (dbt packages, platform patterns)
-- **DE Commands** — new slash commands for data workflows
-- **Bug Fixes** — help improve stability
-- **Documentation** — clarify and expand docs
+- **KB Domains** — share knowledge base domains
+- **Commands** — new slash commands for data workflows
+- **Plugin Development** — improve the build pipeline and distribution
 
 ---
 

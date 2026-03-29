@@ -9,22 +9,25 @@ Get from zero to your first spec-driven data pipeline in 10 minutes.
 
 ## Installation
 
-Clone the AgentSpec framework into your project:
+### Option 1: Install as Plugin (Recommended)
 
 ```bash
-# Clone the repository
-git clone https://github.com/luanmorenomaciel/agentspec.git
-
-# Copy the .claude directory into your project
-cp -r agentspec/.claude your-project/.claude
+claude plugin marketplace add luanmorenommaciel/agentspec
+claude plugin install agentspec
 ```
 
-Or add it directly to an existing project:
+Or test locally:
 
 ```bash
-cd your-project
-git clone https://github.com/luanmorenomaciel/agentspec.git /tmp/agentspec
-cp -r /tmp/agentspec/.claude .claude
+git clone https://github.com/luanmorenommaciel/agentspec.git
+claude --plugin-dir ./agentspec/plugin
+```
+
+### Option 2: Copy Framework (Legacy)
+
+```bash
+git clone https://github.com/luanmorenommaciel/agentspec.git
+cp -r agentspec/.claude your-project/.claude
 ```
 
 ## Initialize Your Project
@@ -43,9 +46,10 @@ your-project/.claude/
 |   +-- data-engineering/ # 15 DE implementation agents
 |   +-- dev/             # 4 developer productivity agents
 |
-+-- commands/            # 21 slash commands (ready to use)
++-- commands/            # 29 slash commands (ready to use)
 |   +-- workflow/        # 7 SDD phase commands
 |   +-- data-engineering/ # 8 DE commands
+|   +-- visual-explainer/ # 8 visual documentation commands
 |   +-- core/            # 4 utility commands
 |   +-- knowledge/       # 1 KB command
 |   +-- review/          # 1 code review command
