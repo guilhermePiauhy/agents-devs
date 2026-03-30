@@ -1,0 +1,55 @@
+name: SDD Feature
+description: Iniciar um novo feature no workflow SDD (Brainstorm → Define → Design → Build → Ship)
+title: "feat: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Workflow SDD
+        Após criar a issue, avance pelas fases adicionando os labels abaixo em ordem:
+        `sdd:brainstorm` → `sdd:define` → `sdd:design` → `sdd:build` → `sdd:ship`
+
+        Cada label dispara um agente que gera o documento da fase como comentário.
+        Valide o comentário antes de avançar para o próximo label.
+
+  - type: input
+    id: target_repo
+    attributes:
+      label: Target Repo
+      description: Repositório onde o código será gerado (formato owner/repo)
+      placeholder: guilhermePiauhy/meu-projeto
+    validations:
+      required: true
+
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objetivo
+      description: O que você quer construir ou resolver?
+      placeholder: |
+        Descreva o que precisa ser feito, o problema que resolve, e o contexto.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Contexto adicional
+      description: Stack, restrições, referências ou exemplos relevantes
+      placeholder: |
+        - Stack: Docker, Python, PostgreSQL...
+        - Restrições: deve funcionar em Ubuntu 22.04
+        - Referência: https://...
+
+  - type: checkboxes
+    id: phases
+    attributes:
+      label: Fases SDD
+      description: Acompanhe o progresso aqui (marque conforme avança)
+      options:
+        - label: "🧠 Brainstorm — label: `sdd:brainstorm`"
+        - label: "📋 Define — label: `sdd:define`"
+        - label: "🏗️ Design — label: `sdd:design`"
+        - label: "🔨 Build — label: `sdd:build`"
+        - label: "🚀 Ship — label: `sdd:ship`"
