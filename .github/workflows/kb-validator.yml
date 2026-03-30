@@ -1,0 +1,46 @@
+name: KB Validator
+
+on:
+  pull_request:
+    paths:
+      - ".claude/kb/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate KB domain structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          for domain_dir in .claude/kb/*/; do
+            [ -d "$domain_dir" ] || continue
+            domain_name="$(basename "$domain_dir")"
+
+            if [[ "$domain_name" == "_templates" || "$domain_name" == "shared" ]]; then
+              continue
+            fi
+
+            echo "Validating domain: $domain_name"
+
+            test -f "${domain_dir}index.md" || { echo "Missing index.md in ${domain_name}"; exit 1; }
+            test -f "${domain_dir}quick-reference.md" || { echo "Missing quick-reference.md in ${domain_name}"; exit 1; }
+            test -d "${domain_dir}concepts" || { echo "Missing concepts/ in ${domain_name}"; exit 1; }
+            test -d "${domain_dir}patterns" || { echo "Missing patterns/ in ${domain_name}"; exit 1; }
+
+            concept_count="$(find "${domain_dir}concepts" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
+            pattern_count="$(find "${domain_dir}patterns" -maxdepth 1 -type f -name '*.md' | wc -l | tr -d ' ')"
+
+            if [ "$concept_count" -lt 3 ]; then
+              echo "Warning: ${domain_name} has only ${concept_count} concept files (recommended 3+)."
+            fi
+            if [ "$pattern_count" -lt 3 ]; then
+              echo "Warning: ${domain_name} has only ${pattern_count} pattern files (recommended 3+)."
+            fi
+          done
+
+          echo "KB structure validation passed."

@@ -1,0 +1,60 @@
+name: Agent Validator
+
+on:
+  pull_request:
+    paths:
+      - ".claude/agents/**"
+      - ".claude/sdd/architecture/**"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate agent frontmatter
+        shell: bash
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          files=(.claude/agents/**/*.md)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No agent files found."
+            exit 0
+          fi
+
+          for file in "${files[@]}"; do
+            case "$file" in
+              */README.md|*/_template.md) continue ;;
+            esac
+
+            echo "Validating: $file"
+
+            if ! grep -q '^name:' "$file"; then
+              echo "Missing required field 'name:' in $file"
+              exit 1
+            fi
+            if ! grep -q '^tier:' "$file"; then
+              echo "Missing required field 'tier:' in $file"
+              exit 1
+            fi
+            if ! grep -q '^kb_domains:' "$file"; then
+              echo "Missing required field 'kb_domains:' in $file"
+              exit 1
+            fi
+
+            tier="$(grep '^tier:' "$file" | head -1 | awk '{print $2}')"
+            if [[ "$tier" == "T2" || "$tier" == "T3" ]]; then
+              if ! grep -q '^stop_conditions:' "$file"; then
+                echo "Missing 'stop_conditions:' for $tier agent in $file"
+                exit 1
+              fi
+              if ! grep -q '^escalation_rules:' "$file"; then
+                echo "Missing 'escalation_rules:' for $tier agent in $file"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "Agent validation passed."

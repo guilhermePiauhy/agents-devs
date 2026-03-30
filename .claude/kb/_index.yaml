@@ -1054,3 +1054,46 @@ domains:
       - name: remote-state
         path: patterns/remote-state.md
         confidence: 0.90
+
+  # ─── Enterprise Platforms ──────────────────────────────────────
+
+  odoo:
+    name: odoo
+    description: "Odoo ERP 14-17 — modules, models, views, security, workflows, data migration, API integration"
+    path: odoo/
+    mcp_validated: "2026-03-30"
+    entry_points:
+      index: index.md
+      quick_reference: quick-reference.md
+    concepts:
+      - name: modules-system
+        path: concepts/modules-system.md
+        confidence: 0.95
+      - name: models-orm
+        path: concepts/models-orm.md
+        confidence: 0.95
+      - name: views-ui
+        path: concepts/views-ui.md
+        confidence: 0.95
+      - name: security
+        path: concepts/security.md
+        confidence: 0.95
+      - name: workflows
+        path: concepts/workflows.md
+        confidence: 0.90
+      - name: api-integration
+        path: concepts/api-integration.md
+        confidence: 0.90
+    patterns:
+      - name: custom-modules
+        path: patterns/custom-modules.md
+        confidence: 0.95
+      - name: models-views
+        path: patterns/models-views.md
+        confidence: 0.95
+      - name: data-import
+        path: patterns/data-import.md
+        confidence: 0.95
+      - name: reports
+        path: patterns/reports.md
+        confidence: 0.90

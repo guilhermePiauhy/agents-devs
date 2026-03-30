@@ -1,0 +1,45 @@
+name: Build Plugin
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run build script
+        shell: bash
+        run: |
+          chmod +x ./build-plugin.sh
+          ./build-plugin.sh
+
+      - name: Verify output structure
+        shell: bash
+        run: |
+          set -euo pipefail
+          for dir in agents commands kb sdd skills .claude-plugin; do
+            test -d "plugin/${dir}" || { echo "Missing plugin/${dir}"; exit 1; }
+          done
+
+          echo "Agents:   $(find plugin/agents -type f -name '*.md' | wc -l | tr -d ' ')"
+          echo "Commands: $(find plugin/commands -type f -name '*.md' | wc -l | tr -d ' ')"
+          echo "Domains:  $(find plugin/kb -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+
+      - name: Upload plugin artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentspec-plugin
+          path: plugin/
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            plugin/**
