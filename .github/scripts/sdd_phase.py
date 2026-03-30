@@ -1,12 +1,17 @@
 """
-SDD GitHub-native workflow — triggered by issue labels.
+GitHub-native workflow — triggered by issue labels.
 
-Label → Phase:
+SDD Feature phases:
   sdd:brainstorm  → Explore the idea, generate BRAINSTORM doc
   sdd:define      → Extract requirements, generate DEFINE doc
   sdd:design      → Technical architecture, generate DESIGN doc
   sdd:build       → Generate code + open PR in target repo
   sdd:ship        → Archive, lessons learned, close issue
+
+Bugfix phases:
+  bug:diagnose    → Analyze bug, identify root cause, propose fix
+  bug:fix         → Generate patch + open PR in target repo
+  bug:close       → Verification checklist + close issue
 
 Target repo is parsed from the issue body:
   **Target Repo:** owner/repo
@@ -126,6 +131,9 @@ PHASE_ICON = {
     "design": "🏗️",
     "build": "🔨",
     "ship": "🚀",
+    "diagnose": "🔍",
+    "fix": "🩹",
+    "close": "✅",
 }
 
 PROMPTS = {
@@ -288,6 +296,107 @@ Structure your response as:
 Context:
 {context}
 """,
+
+    # ------------------------------------------------------------------
+    # Bugfix phases
+    # ------------------------------------------------------------------
+
+    "diagnose": """\
+You are an expert software debugger working inside a GitHub issue.
+
+Based on the bug report below, generate a **DIAGNOSE document**.
+
+Structure your response as:
+## 🔍 DIAGNOSE: {title}
+
+### Bug Summary
+(one paragraph describing what is broken and the observed vs expected behavior)
+
+### Likely Root Cause
+(your best analysis of what is causing this — be specific about files, functions, or config if mentioned)
+
+### Reproduction Steps
+(minimal steps to reproduce, inferred from the report)
+
+### Affected Areas
+| Area | File / Component | Confidence |
+|------|-----------------|------------|
+| ... | ... | High/Medium/Low |
+
+### Proposed Fix Approach
+(concrete description of what needs to change to fix the bug)
+
+### Risk Assessment
+(could this fix break anything else?)
+
+### Next Step
+Add label `bug:fix` to generate the patch and open a PR.
+
+---
+Bug report:
+{context}
+""",
+
+    "fix": """\
+You are an expert software engineer fixing a bug inside a GitHub issue.
+
+Based on the diagnosis and full context below, generate ALL files needed to fix this bug.
+
+IMPORTANT: Respond with ONLY a valid JSON object — no markdown, no explanation, just the JSON:
+
+{{
+  "branch": "fix/short-bug-description",
+  "pr_title": "fix: short description of the fix",
+  "pr_body": "## Fix Summary\\n\\n- What was broken\\n- What was changed\\n- How to verify\\n\\nFixes #{issue_number}",
+  "fix_summary": "2-3 sentence summary of the fix",
+  "files": [
+    {{
+      "path": "relative/path/to/file.ext",
+      "content": "full corrected file content"
+    }}
+  ]
+}}
+
+Rules:
+- "branch" must start with fix/
+- Include ONLY files that need to change to fix the bug
+- Every file must contain the complete corrected content — not just the diff
+- "pr_body" must reference: Fixes #{issue_number}
+
+Context:
+{context}
+""",
+
+    "close": """\
+You are a QA engineer closing a bug issue on GitHub.
+
+Based on the full context below (bug report, diagnosis, fix PR), generate a **CLOSE document**.
+
+Structure your response as:
+## ✅ BUG CLOSED: {title}
+
+### Fix Summary
+(what was changed and why it resolves the bug)
+
+### Verification Checklist
+- [ ] PR merged in target repo
+- [ ] (specific test step 1 derived from the bug report)
+- [ ] (specific test step 2)
+- [ ] No regressions in related areas
+
+### Root Cause (confirmed)
+(final confirmed root cause)
+
+### Prevention
+(what could prevent this class of bug in the future — tests, linting, etc.)
+
+### Status
+✅ Bug fixed, verified, and issue closed.
+
+---
+Context:
+{context}
+""",
 }
 
 
@@ -424,7 +533,7 @@ def execute_build(context: str, target_repo: str) -> str:
 # Main
 # ---------------------------------------------------------------------------
 def main():
-    print(f"SDD phase: {PHASE} | Issue: #{ISSUE_NUMBER} | Repo: {REPO}")
+    print(f"Phase: {PHASE} | Label: {LABEL_NAME} | Issue: #{ISSUE_NUMBER} | Repo: {REPO}")
 
     if PHASE not in PROMPTS:
         print(f"Unknown phase: {PHASE}. Valid: {list(PROMPTS.keys())}")
@@ -435,18 +544,19 @@ def main():
 
     footer = (
         f"\n\n---\n"
-        f"*AgentSpec SDD — Phase **{PHASE_ICON.get(PHASE, '')} {PHASE.title()}** "
+        f"*AgentSpec — Phase **{PHASE_ICON.get(PHASE, '')} {PHASE.title()}** "
         f"| Label `{LABEL_NAME}` on issue #{ISSUE_NUMBER}*"
     )
     if target_repo:
         footer += f"\n*Target: [{target_repo}](https://github.com/{target_repo})*"
 
-    if PHASE == "build":
+    # Phases that generate code and open a PR
+    if PHASE in ("build", "fix"):
         if not target_repo:
             post_comment(
-                "❌ **Build failed:** No `Target Repo` found in this issue.\n\n"
+                f"❌ **{PHASE.title()} failed:** No `Target Repo` found in this issue.\n\n"
                 "Add a line like:\n```\n**Target Repo:** owner/repo\n```\n"
-                "Then re-add the `sdd:build` label."
+                f"Then re-add the `{LABEL_NAME}` label."
             )
             sys.exit(1)
 
@@ -463,7 +573,8 @@ def main():
         result = call_claude(prompt)
         post_comment(result + footer)
 
-        if PHASE == "ship":
+        # Close issue on final phases
+        if PHASE in ("ship", "close"):
             close_issue()
 
     print("Done.")

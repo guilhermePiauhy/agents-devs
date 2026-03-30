@@ -11,7 +11,7 @@ permissions:
 jobs:
   sdd-phase:
     runs-on: ubuntu-latest
-    if: startsWith(github.event.label.name, 'sdd:')
+    if: startsWith(github.event.label.name, 'sdd:') || startsWith(github.event.label.name, 'bug:')
 
     steps:
       - name: Checkout

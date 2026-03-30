@@ -1,0 +1,67 @@
+name: Bug Fix
+description: Reportar e corrigir um bug com workflow automatizado (Diagnose → Fix → Close)
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Workflow de Bugfix
+        Após criar a issue, avance pelas fases adicionando os labels em ordem:
+        `bug:diagnose` → `bug:fix` → `bug:close`
+
+        Cada label dispara um agente que analisa o bug, gera o patch, ou fecha a issue.
+
+  - type: input
+    id: target_repo
+    attributes:
+      label: Target Repo
+      description: Repositório onde o fix será aplicado (formato owner/repo)
+      placeholder: guilhermePiauhy/meu-projeto
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do Bug
+      description: O que está acontecendo? O que deveria acontecer?
+      placeholder: |
+        **Comportamento atual:** ...
+        **Comportamento esperado:** ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Como reproduzir
+      placeholder: |
+        1. Execute `docker compose up`
+        2. Acesse http://localhost:8069
+        3. Observe o erro...
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Ambiente
+      placeholder: |
+        - OS: Ubuntu 22.04
+        - Docker: 24.0
+        - Branch: main
+        - Commit: abc1234
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Stack trace
+      render: shell
+
+  - type: checkboxes
+    id: phases
+    attributes:
+      label: Fases do Bugfix
+      options:
+        - label: "🔍 Diagnose — label: `bug:diagnose`"
+        - label: "🩹 Fix — label: `bug:fix`"
+        - label: "✅ Close — label: `bug:close`"
