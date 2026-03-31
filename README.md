@@ -12,252 +12,599 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/v3.0.0-green?style=flat-square)](CHANGELOG.md)
 
-**A single AI agent reviewing your data pipeline will miss things.**<br/>
-**58 specialized agents with 22 knowledge domains will not.**
+**Desenvolvimento guiado por especificação com IA — Workflows nativos do GitHub, controlados por labels, executados por agentes inteligentes.**
 
 <br/>
 
-[Install](#install) · [Quick Start](#quick-start) · [Commands](#which-command-do-i-need) · [Agents](#58-agents-across-8-categories) · [Docs](docs/)
+[O que é?](#o-que-é-agentspec) · [Começar](#como-funciona) · [Feature](#novo-feature-sdd) · [Bugfix](#bugfix) · [Setup](#configuração)
 
 </div>
 
-<br/>
+---
 
-## Why AgentSpec?
+## O que é AgentSpec?
 
-Every time you ask an AI to build a data pipeline, it starts from scratch — no memory of partition strategies, no awareness of SCD patterns, no understanding of your data contracts. You get hallucinated SQL, wrong incremental strategies, and pipelines that pass in dev but break in production.
+**AgentSpec** é um framework de desenvolvimento guiado por especificação que usa agentes de IA para automatizar o processo de criação e correção de código. Em vez de escrever todo o código manualmente, você descreve o que quer e os agentes IA fazem o trabalho pesado.
 
-AgentSpec solves this with **Spec-Driven Data Engineering**: a 5-phase workflow where every phase has access to 22 knowledge base domains, every agent knows its boundaries, and every decision is confidence-scored against real documentation — not guessed.
+### Por que usar?
 
-<br/>
+- **Menos tempo escrevendo** — descreva o que quer, os agentes geram o código
+- **Melhor documentação** — cada feature vem com especificação completa
+- **Padrão consistente** — todas as features seguem o mesmo fluxo estruturado
+- **Rastreabilidade** — história completa de decisões em cada issue
+- **Integração nativa GitHub** — sem ferramentas extras, tudo na plataforma que você já usa
 
-## Install
+### O que você pode fazer?
 
-```bash
-# Install the plugin (one-time)
-claude plugin marketplace add luanmorenommaciel/agentspec
-claude plugin install agentspec
-```
+Você pode usar AgentSpec para:
 
-Done. Every Claude Code session now has 58 agents, 29 commands, and 22 KB domains. Updates are one command:
+✨ **Desenvolver features novas** com 5 fases estruturadas (brainstorm → define → design → build → ship)
 
-```bash
-claude plugin update agentspec
-```
+🐛 **Diagnosticar e corrigir bugs** com análise de root cause automática
 
-<details>
-<summary><b>Alternative install methods</b></summary>
+📊 **Projetar pipelines de dados** — DAGs, schemas, tabelas, transformações
 
-```bash
-# Local testing (no install needed)
-git clone https://github.com/luanmorenommaciel/agentspec.git
-claude --plugin-dir ./agentspec/plugin
+🔍 **Revisar código** — análise automatizada de qualidade, segurança e performance
 
-# Legacy copy (pre-plugin, still works)
-git clone https://github.com/luanmorenommaciel/agentspec.git
-cp -r agentspec/.claude your-project/.claude
-```
+📈 **Gerar documentação** — READMEs, diagramas de arquitetura, slides de apresentação
 
-</details>
+🧪 **Escrever testes** — geradores automáticos de testes unitários e integração
 
-<br/>
+💾 **Projetar schemas** — star schema, Data Vault, SCD type 2, etc
 
-## Quick Start
+---
 
-### Build a data pipeline in 5 phases
+## Como Funciona
 
-```bash
-/agentspec:brainstorm "Daily orders pipeline from Postgres to Snowflake star schema"
-/agentspec:define ORDERS_PIPELINE
-/agentspec:design ORDERS_PIPELINE
-/agentspec:build ORDERS_PIPELINE
-/agentspec:ship ORDERS_PIPELINE
-```
-
-### Or jump straight to what you need
-
-```bash
-/agentspec:schema "Star schema for e-commerce analytics"
-/agentspec:pipeline "Daily orders ETL with Airflow"
-/agentspec:data-quality models/staging/stg_orders.sql
-/agentspec:sql-review models/marts/
-/agentspec:data-contract "Contract between orders team and analytics"
-```
-
-<br/>
-
-## Which Command Do I Need?
-
-### Data Engineering
-
-| I want to... | Command | Agent |
-|:--|:--|:--|
-| Design a data pipeline / DAG | `/agentspec:pipeline` | `pipeline-architect` |
-| Design a star schema / data model | `/agentspec:schema` | `schema-designer` |
-| Add data quality checks | `/agentspec:data-quality` | `data-quality-analyst` |
-| Optimize slow SQL | `/agentspec:sql-review` | `sql-optimizer` |
-| Choose Iceberg vs Delta Lake | `/agentspec:lakehouse` | `lakehouse-architect` |
-| Build a RAG / embedding pipeline | `/agentspec:ai-pipeline` | `ai-data-engineer` |
-| Create a data contract | `/agentspec:data-contract` | `data-contracts-engineer` |
-| Migrate legacy SSIS / Informatica | `/agentspec:migrate` | `dbt-specialist` + `spark-engineer` |
-
-### SDD Workflow
-
-| I want to... | Command | What Happens |
-|:--|:--|:--|
-| Explore an idea | `/agentspec:brainstorm` | Compare approaches, discovery questions, YAGNI filter |
-| Capture requirements | `/agentspec:define` | Structured requirements with clarity score (min 12/15) |
-| Design architecture | `/agentspec:design` | File manifest + pipeline architecture + ADRs |
-| Implement the feature | `/agentspec:build` | Auto-delegates to specialist agents per file type |
-| Archive completed work | `/agentspec:ship` | Lessons learned + KB updates |
-| Update after changes | `/agentspec:iterate` | Cascade-aware updates across all phase documents |
-
-### Visual & Utilities
-
-| I want to... | Command |
-|:--|:--|
-| Generate architecture diagrams | `/agentspec:generate-web-diagram` |
-| Create presentation slides | `/agentspec:generate-slides` |
-| Visual implementation plan | `/agentspec:generate-visual-plan` |
-| Review code changes visually | `/agentspec:diff-review` |
-| Review code | `/agentspec:review` |
-| Analyze meeting transcripts | `/agentspec:meeting` |
-| Create a new KB domain | `/agentspec:create-kb` |
-
-<br/>
-
-## How It Works
+O fluxo é simples: **você cria uma issue, adiciona um label, o agente faz o trabalho, posta o resultado como comentário**.
 
 ```
-  BRAINSTORM ──► DEFINE ──► DESIGN ──► BUILD ──► SHIP
-  Explore ideas   Scope &    File       Agent      Archive &
-  & approaches    contracts  manifest   delegation lessons
-
-                                │
-          ┌─────────────────────┼──────────────────────┐
-          ▼                     ▼                      ▼
-    ┌───────────┐        ┌───────────┐          ┌───────────┐
-    │ dbt-spec  │        │ spark-eng │          │ pipeline  │
-    │ Models    │        │ Jobs      │          │ DAGs      │
-    └─────┬─────┘        └─────┬─────┘          └─────┬─────┘
-          └────────────────────┼──────────────────────┘
-                               ▼
-                         BUILD REPORT
-                         Tests + Quality Gates
-
-                          ↻ /iterate
-                    Cascade-aware updates
+┌─────────────────────────────────────────────────────────────────┐
+│                  VOCÊ CRIA UMA ISSUE                             │
+│              "feat: novo endpoint de login"                      │
+│              Target Repo: meu/repo-alvo                          │
+└──────────────────────┬──────────────────────────────────────────┘
+                       │
+                       ↓ você adiciona label "sdd:brainstorm"
+                       │
+┌──────────────────────────────────────────────────────────────────┐
+│ GitHub Action dispara → Claude API executa → resultado postado  │
+│ O agente explora a ideia, lista abordagens, levanta perguntas   │
+└──────────────────────┬──────────────────────────────────────────┘
+                       │
+                       ↓ você discute no comentário
+                       ↓ valida a direção
+                       ↓ adiciona próximo label "sdd:define"
+                       │
+┌──────────────────────────────────────────────────────────────────┐
+│ GitHub Action dispara → Claude API executa → resultado postado  │
+│ O agente gera requisitos estruturados (FR, NFR, constraints)    │
+└──────────────────────┬──────────────────────────────────────────┘
+                       │
+        ┌──────────────┴──────────────┐
+        │ continua até...              │
+        ↓                              │
+    (design → build → ship)            │
+                                       ↓
+                        FEATURE COMPLETA COM DOCUMENTAÇÃO
 ```
 
-**Agent matching:** Your DESIGN doc specifies dbt staging models, a PySpark job, and an Airflow DAG — AgentSpec automatically delegates to `dbt-specialist`, `spark-engineer`, and `pipeline-architect`.
+### Dois Fluxos Disponíveis
 
-**Requirements changed?** `/agentspec:iterate` updates any phase document with automatic cascade detection across all downstream docs.
+| Fluxo | Quando usar | Fases | Tempo típico |
+|-------|-------------|-------|--------------|
+| **SDD Feature** | Criar algo novo, feature, melhoria | 5 fases | 30-60 min |
+| **Bugfix** | Corrigir problema, patch, hotfix | 3 fases | 10-20 min |
 
-<br/>
+---
 
-## 58 Agents Across 8 Categories
+## Novo Feature (SDD)
 
-| Category | Count | Focus |
-|:--|:--|:--|
-| **Architect** | 8 | Schema design, pipeline architecture, medallion layers, GenAI systems |
-| **Cloud** | 10 | AWS Lambda, GCP Cloud Run, Supabase, CI/CD, Terraform |
-| **Data Engineering** | 15 | dbt, Spark, Airflow, streaming, Lakeflow, SQL optimization |
-| **Platform** | 6 | Microsoft Fabric end-to-end (architecture, pipelines, security, AI, logging, CI/CD) |
-| **Python** | 6 | Code review, documentation, cleaning, prompt engineering |
-| **Workflow** | 6 | Brainstorm, define, design, build, ship, iterate |
-| **Dev** | 4 | Codebase exploration, shell scripting, meeting analysis, prompt crafting |
-| **Test** | 3 | Test generation, data quality analysis, data contract authoring |
+O fluxo SDD tem 5 fases estruturadas. Cada fase gera um documento que fica registrado na issue.
 
-Every agent follows the same cognitive framework:
+### Passo a passo
 
-1. **KB-first** — check local knowledge base before external sources
-2. **Confidence-scored** — calculate confidence from evidence, never self-assess
-3. **Escalation-aware** — transfer to the right specialist when out of domain
-4. **Quality-gated** — pre-flight checklist before every substantive response
+#### **Fase 0: Brainstorm** 🧠
+Você cria uma issue com a ideia geral:
 
-<br/>
+```markdown
+Title: feat: pipeline Odoo 17 com Docker
+Target Repo: guilhermePiauhy/odoo-piauhy
+Objetivo: Criar docker-compose para prod e dev com Nginx reverse proxy e PostgreSQL
+Contexto: Projeto Odoo atual está em server físico, queremos containerizar
+```
 
-## 22 Knowledge Base Domains
+Adicione o label **`sdd:brainstorm`** → O agente:
+- Explora diferentes abordagens
+- Lista tecnologias possíveis
+- Levanta perguntas sobre requisitos
+- Sugere trade-offs
 
-| Category | Domains |
-|:--|:--|
-| **Core DE** | `dbt` · `spark` · `sql-patterns` · `airflow` · `streaming` |
-| **Data Design** | `data-modeling` · `data-quality` · `medallion` |
-| **Infrastructure** | `lakehouse` · `lakeflow` · `cloud-platforms` · `terraform` |
-| **Cloud** | `aws` · `gcp` · `microsoft-fabric` |
-| **AI & Modern** | `ai-data-engineering` · `modern-stack` · `genai` · `prompt-engineering` |
-| **Foundations** | `pydantic` · `python` · `testing` |
+**Você faz:** Ler, discutir no comentário, esclarecer pontos, validar direção
 
-Each domain contains an `index.md`, `quick-reference.md`, `concepts/` (3-6 files), and `patterns/` (3-6 files with production code). Agents load domains on-demand, not upfront.
+---
 
-<br/>
+#### **Fase 1: Define** 📋
+Você adiciona o label **`sdd:define`** → O agente:
+- Lê toda discussão da fase anterior
+- Extrai requisitos estruturados:
+  - **FR (Functional Requirements):** o que o sistema deve fazer
+  - **NFR (Non-Functional Requirements):** performance, segurança, escalabilidade
+  - **Constraints:** limitações técnicas, orçamento, timing
+- Documenta tudo em formato estruturado
 
-## 5-Phase Workflow with Quality Gates
+**Exemplo de saída:**
+```
+## Requisitos Funcionais
 
-| Phase | Command | Output | Gate |
-|:--|:--|:--|:--|
-| **0. Brainstorm** | `/agentspec:brainstorm` | `BRAINSTORM_{FEATURE}.md` | 3+ questions, 2+ approaches |
-| **1. Define** | `/agentspec:define` | `DEFINE_{FEATURE}.md` | Clarity Score >= 12/15 |
-| **2. Design** | `/agentspec:design` | `DESIGN_{FEATURE}.md` | Complete manifest + schema plan |
-| **3. Build** | `/agentspec:build` | Code + `BUILD_REPORT.md` | All tests pass |
-| **4. Ship** | `/agentspec:ship` | `SHIPPED_{DATE}.md` | Acceptance verified |
+FR-001: Sistema deve rodar em ambiente de produção
+  Critério: Docker Compose v2+, suporte a múltiplos containers
+  
+FR-002: Deve incluir reverse proxy Nginx
+  Critério: SSL/TLS, redirecionamento HTTP→HTTPS
+  
+... mais requisitos
+```
 
-<br/>
+**Você faz:** Validar escopo, responder perguntas abertas, aprovar requisitos
 
-## Project Structure
+---
+
+#### **Fase 2: Design** 🏗️
+Você adiciona o label **`sdd:design`** → O agente:
+- Cria arquitetura técnica completa
+- Gera diagrama visual
+- Lista todos os arquivos que serão criados
+- Documenta decisões de design
+- Especifica dependências e integrações
+
+**Exemplo de saída:**
+```
+## Arquitetura
+
+Containers:
+- odoo:17 (aplicação)
+- postgres:15 (banco)
+- nginx:latest (reverse proxy)
+- redis:7 (cache)
+
+Volumes:
+- odoo_data: dados de produção
+- postgres_data: banco persistente
+
+Redes:
+- internal: apenas para containers
+- frontend: nginx exposto
+
+Arquivos a criar:
+- docker-compose.yml (dev)
+- docker-compose.prod.yml (produção)
+- .env.example
+- nginx.conf
+- ... mais arquivos
+```
+
+**Você faz:** Revisar arquitetura, validar abordagem, sugerir mudanças se necessário
+
+---
+
+#### **Fase 3: Build** 🔨
+Você adiciona o label **`sdd:build`** → O agente:
+- Gera **todos os arquivos** especificados no design
+- Abre um **PR automaticamente** no Target Repo
+- Inclui testes unitários (se aplicável)
+- Adiciona documentação inline
+
+**O que acontece:**
+1. Agente gera cada arquivo com código pronto para produção
+2. Faz commit de todos os arquivos
+3. Abre PR no repo alvo com descrição detalhada
+4. Você recebe notificação no GitHub
+
+**Você faz:** 
+- Revisar o PR no GitHub
+- Rodar testes localmente
+- Sugerir ajustes se necessário
+- **Fazer merge** quando estiver satisfeito
+
+---
+
+#### **Fase 4: Ship** 🚀
+Você adiciona o label **`sdd:ship`** → O agente:
+- Documenta lições aprendidas
+- Cria um sumário de entrega
+- Fecha a issue com checklist de verificação
+
+**Sumário inclui:**
+- O que foi feito
+- Decisões tomadas e por quê
+- Sugestões de melhorias futuras
+- Problemas encontrados e como foram resolvidos
+
+**Você faz:** Nada! A issue fica fechada com histórico completo.
+
+---
+
+### Fases do SDD — Resumo
+
+| Label | O que o agente faz | O que você faz |
+|-------|-------------------|----------------|
+| `sdd:brainstorm` | Explora a ideia, lista abordagens, levanta perguntas | Discute, valida direção |
+| `sdd:define` | Requisitos funcionais + não-funcionais estruturados | Valida escopo, responde perguntas |
+| `sdd:design` | Arquitetura técnica, diagrama, lista de arquivos | Aprova a arquitetura |
+| `sdd:build` | Gera código + abre PR no Target Repo | Revisa PR, faz merge |
+| `sdd:ship` | Sumário de entrega + fecha a issue | — |
+
+---
+
+## Bugfix
+
+Para bugs, o fluxo é mais rápido: diagnóstico → correção → fechamento.
+
+### Passo a passo
+
+#### **Fase 1: Diagnose** 🔎
+Você cria uma issue com o template **Bug Fix**:
+
+```markdown
+Title: fix: Nginx retornando 502 no ambiente de produção
+Target Repo: guilhermePiauhy/odoo-piauhy
+
+## Descrição
+Após subir com docker-compose.prod.yml, o Nginx retorna 502 Gateway Bad
+
+## Como reproduzir
+1. Rodar `docker-compose -f docker-compose.prod.yml up`
+2. Acessar https://localhost
+3. Ver erro 502
+
+## Logs
+[cole stack trace, erro, logs aqui]
+
+## Ambiente
+- Versão: Odoo 17
+- Plataforma: Linux Ubuntu 22.04
+- Docker: 24.0.6
+```
+
+Adicione o label **`bug:diagnose`** → O agente:
+- Analisa o bug
+- Identifica **root cause provável**
+- Lista áreas potencialmente afetadas
+- Propõe abordagem de fix
+
+**Você faz:** Validar diagnóstico, confirmar se está no caminho certo
+
+---
+
+#### **Fase 2: Fix** 🔧
+Você adiciona o label **`bug:fix`** → O agente:
+- Gera **patch completo**
+- Testa (simulado)
+- Abre **PR automaticamente** no Target Repo
+
+**O que pode incluir:**
+- Correção de config (nginx.conf, docker-compose.yml, etc)
+- Atualização de código
+- Ajuste de variáveis de ambiente
+
+**Você faz:** Revisar PR, testar localmente, fazer merge
+
+---
+
+#### **Fase 3: Close** ✅
+Você adiciona o label **`bug:close`** → O agente:
+- Cria **checklist de verificação** (foi o problema resolvido?)
+- Sugere testes para validar o fix
+- Fecha a issue
+
+**Checklist inclui:**
+- ✓ Bug não ocorre mais
+- ✓ Sem regressões
+- ✓ Logs não mostram erros
+- ✓ Performance normal
+
+**Você faz:** Marcar itens do checklist conforme valida
+
+---
+
+### Fases do Bugfix — Resumo
+
+| Label | O que o agente faz | O que você faz |
+|-------|-------------------|----------------|
+| `bug:diagnose` | Analisa root cause, lista áreas afetadas | Valida diagnóstico |
+| `bug:fix` | Gera patch + abre PR no Target Repo | Revisa e faz merge do PR |
+| `bug:close` | Checklist de verificação + fecha a issue | Marca itens conforme valida |
+
+---
+
+## Configuração
+
+### Pré-requisitos
+
+- Conta GitHub com permissão de criar Actions em repositórios
+- Conta Anthropic com API key (https://console.anthropic.com)
+- PAT (Personal Access Token) do GitHub com permissão em repos alvo
+
+### 1. Secrets do GitHub (OBRIGATÓRIO)
+
+Acesse `Settings → Secrets and variables → Actions` neste repositório e adicione:
+
+| Secret | O que é | Como obter |
+|--------|---------|-----------|
+| `ANTHROPIC_API_KEY` | Chave da API Anthropic | https://console.anthropic.com → API keys → Create new key |
+| `GH_PAT` | Personal Access Token | GitHub Settings → Developer settings → Personal access tokens (fine-grained) |
+
+#### **Criando o GH_PAT:**
+
+1. GitHub → Settings → Developer settings → Personal access tokens
+2. Clique em "Fine-grained tokens" (não classic)
+3. Clique em "Generate new token"
+4. Configure:
+   - **Token name:** `AgentSpec-Action`
+   - **Expiration:** 90 dias (recomendado)
+   - **Resource owner:** Sua conta
+   - **Repository access:** Selecione repositórios onde você quer que os agentes criem PRs
+   - **Permissions:**
+     - `Contents: Read and write`
+     - `Pull requests: Read and write`
+     - `Issues: Read and write` (opcional, para comentar em issues)
+5. Copie o token e cole em `Settings → Secrets → GH_PAT`
+
+### 2. Templates de Issue (Automático)
+
+Os templates já estão configurados em `.github/ISSUE_TEMPLATE/`:
+
+- **SDD Feature** — para features e melhorias (5 fases)
+- **Bug Fix** — para correções (3 fases)
+
+Ao criar uma issue, você verá esses templates na opção "Choose a template".
+
+### 3. Primeiro uso
+
+1. **Criar uma issue** usando um dos templates
+2. **Preencher o formulário** com título, descrição e Target Repo
+3. **Adicionar um label** (`sdd:brainstorm` ou `bug:diagnose`)
+4. **Aguardar** o workflow executar (leva 30-60 segundos)
+5. **Ver resultado** no comentário da issue
+
+---
+
+## Referência Completa de Labels
+
+### SDD Feature — Labels e Fases
+
+| Label | Cor | Fase | Significado |
+|-------|-----|------|------------|
+| `sdd:brainstorm` | Roxo | 0 | Exploração de ideia |
+| `sdd:define` | Azul escuro | 1 | Extração de requisitos |
+| `sdd:design` | Azul | 2 | Arquitetura técnica |
+| `sdd:build` | Verde | 3 | Implementação e PR |
+| `sdd:ship` | Vermelho | 4 | Entrega e fechamento |
+
+**Como usar:** Adicione um label por vez. Aguarde a execução do agente antes de adicionar o próximo.
+
+### Bugfix — Labels e Fases
+
+| Label | Cor | Fase | Significado |
+|-------|-----|------|------------|
+| `bug:diagnose` | Laranja | 1 | Análise de root cause |
+| `bug:fix` | Vermelho alaranjado | 2 | Geração de patch |
+| `bug:close` | Vermelho | 3 | Verificação e fechamento |
+
+---
+
+## Formato da Issue
+
+O campo **Target Repo** pode estar em qualquer lugar da issue (título, corpo, ou comentários) em qualquer formato:
+
+```markdown
+**Target Repo:** guilhermePiauhy/odoo-piauhy
+Target Repo: owner/repo
+O código vai para owner/repo
+```
+
+O agente localiza automaticamente e usa esse repo para criar PRs nas fases `build` ou `fix`.
+
+---
+
+## Estrutura do Repositório
 
 ```
-agentspec/
-├── .claude/                 # Source of truth (development)
-│   ├── agents/              # 58 agents across 8 categories
-│   ├── commands/            # 29 slash commands
-│   ├── skills/              # visual-explainer, excalidraw-diagram
-│   ├── kb/                  # 22 knowledge base domains
-│   └── sdd/                 # Templates, contracts, features, archive
+meu-agentspec/
+├── .github/
+│   ├── workflows/
+│   │   ├── sdd-feature.yml         # Workflow para feature SDD
+│   │   └── bugfix.yml              # Workflow para bugfix
+│   ├── scripts/
+│   │   └── sdd_phase.py            # Script principal — comunica com Claude API
+│   └── ISSUE_TEMPLATE/
+│       ├── sdd-feature.yml         # Template para criar feature
+│       └── bug-fix.yml             # Template para criar bugfix
 │
-├── plugin/                  # Distributable Claude Code plugin
-│   ├── .claude-plugin/      # Manifest + marketplace config
-│   ├── agents/              # Path-rewritten agents
-│   ├── skills/              # 4 skills (2 original + 2 plugin-only)
-│   ├── hooks/               # SessionStart workspace init
-│   └── ...                  # commands, kb, sdd, scripts
+├── .claude/
+│   ├── agents/                     # 61 agentes especializados
+│   │   ├── architect/              # Arquitetos de sistema (schema, pipeline, lakehouse)
+│   │   ├── cloud/                  # Especialistas em AWS, GCP, CI/CD
+│   │   ├── data-engineering/       # 15 especialistas em engenharia de dados
+│   │   ├── python/                 # Desenvolvedores Python, code review, prompts
+│   │   ├── platform/               # Especialistas Microsoft Fabric
+│   │   ├── test/                   # Testes, data quality, contratos
+│   │   ├── dev/                    # Ferramentas: explorer, shell scripts, meeting
+│   │   └── workflow/               # Agentes SDD (brainstorm, define, design, build, ship)
+│   │
+│   ├── commands/                   # 29 comandos slash personalizados
+│   │   ├── workflow/               # /brainstorm, /define, /design, /build, /ship
+│   │   ├── data-engineering/       # /pipeline, /schema, /data-quality, /lakehouse
+│   │   ├── visual-explainer/       # /generate-web-diagram, /diff-review, /project-recap
+│   │   ├── core/                   # /memory, /readme-maker, /sync-context
+│   │   └── review/                 # /review
+│   │
+│   ├── kb/                         # 25 Knowledge Bases
+│   │   ├── dbt/                    # Padrões dbt
+│   │   ├── spark/                  # PySpark, Spark SQL
+│   │   ├── airflow/                # DAG patterns
+│   │   ├── data-modeling/          # Star schema, Data Vault, SCD
+│   │   ├── data-quality/           # Great Expectations, Soda
+│   │   ├── aws/                    # Lambda, S3, Glue
+│   │   ├── gcp/                    # Cloud Run, BigQuery, Pub/Sub
+│   │   ├── microsoft-fabric/       # Lakehouse, Warehouse, Pipelines
+│   │   └── ... mais 17 domínios
+│   │
+│   ├── sdd/                        # Framework SDD
+│   │   ├── architecture/           # Contratos de transição entre fases
+│   │   └── templates/              # Templates de documentos (BRAINSTORM, DEFINE, DESIGN, BUILD)
+│   │
+│   └── skills/                     # 2 skills reutilizáveis
+│       ├── visual-explainer/       # Geração de HTML visual
+│       └── excalidraw-diagram/     # Geração de diagramas Excalidraw
 │
-├── plugin-extras/           # Plugin-only content (merged by build)
-├── build-plugin.sh          # Packages .claude/ → plugin/
-└── docs/                    # Getting started, concepts, tutorials, reference
+├── docs/
+│   ├── getting-started/            # Guia de instalação
+│   ├── concepts/                   # Conceitos SDD
+│   ├── tutorials/                  # Tutoriais (dbt, star schema, Spark)
+│   └── reference/                  # Catálogo completo de agentes e comandos
+│
+├── plugin/                         # Plugin gerado (built by build-plugin.sh)
+├── CLAUDE.md                       # Instruções do projeto (leia primeiro!)
+├── CHANGELOG.md                    # Histórico de versões
+├── CONTRIBUTING.md                # Guia de contribuição
+├── LICENSE                         # MIT License
+└── README.md                       # Este arquivo
 ```
 
-<br/>
+---
 
-## Documentation
+## Exemplos de Uso
 
-| Guide | What You'll Learn |
-|:--|:--|
-| [Getting Started](docs/getting-started/) | Install and build your first data pipeline |
-| [Core Concepts](docs/concepts/) | SDD pillars through a data engineering lens |
-| [Tutorials](docs/tutorials/) | dbt, star schema, data quality, Spark, streaming, RAG |
-| [Reference](docs/reference/) | Full catalog: 58 agents, 29 commands, 22 KB domains |
+### Exemplo 1: Criar um novo endpoint REST
 
-<br/>
+```markdown
+Title: feat: endpoint POST /api/users para criar usuário
+Target Repo: meu-org/meu-backend
 
-## Contributing
+## Descrição
+Preciso de um novo endpoint que permita criar usuários via POST.
 
-We welcome contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+## Especificação básica
+- Método: POST
+- Path: /api/users
+- Body: {name, email, password}
+- Validação: email único, password com min 8 caracteres
+- Resposta: 201 com user_id e timestamp
+```
 
-**Agents** · **KB Domains** · **Commands** · **Plugin Development** · **Documentation**
+**Fluxo:**
+1. Adicione `sdd:brainstorm` → agente explora design do endpoint
+2. Adicione `sdd:define` → agente gera requisitos (validações, erros, edge cases)
+3. Adicione `sdd:design` → agente cria arquitetura (model, controller, middleware)
+4. Adicione `sdd:build` → agente gera código + abre PR
+5. Você revisa e faz merge
+6. Adicione `sdd:ship` → agente fecha com documentação
 
-<br/>
+---
 
-## License
+### Exemplo 2: Corrigir erro de conexão com banco
 
-MIT — see [LICENSE](LICENSE).
+```markdown
+Title: fix: conexão PostgreSQL timeout em queries longas
+Target Repo: meu-org/data-pipeline
+
+## Descrição
+Queries de mais de 5 minutos estão dando timeout e interrompendo pipeline.
+
+## Logs
+Timeout error: connection pool exhausted
+```
+
+**Fluxo:**
+1. Adicione `bug:diagnose` → agente analisa (pool size baixo? timeout config?)
+2. Adicione `bug:fix` → agente gera patch (aumentar pool, timeout, ou otimizar query)
+3. Você testa localmente
+4. Adicione `bug:close` → agente fecha com checklist
+
+---
+
+## FAQ
+
+### **P: Quanto tempo leva cada fase?**
+R: 
+- Brainstorm: 1-2 min
+- Define: 2-3 min
+- Design: 3-5 min
+- Build: 5-15 min (depende de complexidade)
+- Ship: 1 min
+
+Total típico: 15-30 minutos para uma feature pequena.
+
+### **P: Posso usar AgentSpec para qualquer tipo de projeto?**
+R: AgentSpec foi otimizado para **data engineering** (pipelines, schemas, transformações) mas funciona para qualquer projeto. Tem agentes especializados em:
+- Data pipelines (Airflow, Spark, dbt)
+- Engenharia de dados em geral
+- Backend/API REST
+- Python code quality
+- DevOps/CI-CD
+- E mais...
+
+### **P: O código gerado é pronto para produção?**
+R: Geralmente sim, mas você deve:
+- Revisar o código gerado
+- Rodar testes localmente
+- Validar com seus padrões de segurança
+- Fazer ajustes se necessário
+
+O agente gera código de qualidade, mas você é responsável pela validação final.
+
+### **P: Posso pedir mudanças durante o build?**
+R: Sim! Se o PR gerado não for exatamente o que você quer:
+1. Comente no PR com feedback
+2. O agente pode regenerar
+3. Ou você pode editar direto no PR
+
+### **P: Funciona com repositórios privados?**
+R: Sim, desde que:
+- O GH_PAT tenha permissão no repositório
+- O repositório alvo esteja selecionado no fine-grained token
+
+### **P: Posso cancelar uma execução?**
+R: Sim, clique em "Cancel workflow run" na aba Actions do GitHub.
+
+### **P: E se houver erro durante a execução?**
+R: O agente postará o erro na issue. Você pode:
+- Validar as informações fornecidas
+- Adicionar mais contexto
+- Tentar novamente adicionando o label de novo
+
+---
+
+## Próximos Passos
+
+1. **Leia [CLAUDE.md](CLAUDE.md)** — instruções completas do desenvolvimento
+2. **Explore [docs/getting-started](docs/getting-started/)** — guia passo a passo
+3. **Veja [CHANGELOG.md](CHANGELOG.md)** — o que foi adicionado em cada versão
+4. **Contribua!** Veja [CONTRIBUTING.md](CONTRIBUTING.md)
+
+---
+
+## Ficou com dúvidas?
+
+- 📖 Leia a [documentação completa](docs/)
+- 💬 Crie uma issue com `question` label
+- 🐛 Reporte bugs com `bug` label
+- 💡 Sugira features com `enhancement` label
+
+---
+
+## Licença
+
+MIT — veja [LICENSE](LICENSE).
 
 ---
 
 <div align="center">
 
-[Documentation](docs/) · [Contributing](CONTRIBUTING.md) · [Changelog](CHANGELOG.md)
+**Construído com [Claude Code](https://docs.anthropic.com/en/docs/claude-code)**
 
-Built with [Claude Code](https://docs.anthropic.com/en/docs/claude-code)
+[Changelog](CHANGELOG.md) · [Contributing](CONTRIBUTING.md) · [CLAUDE.md](CLAUDE.md)
 
 </div>

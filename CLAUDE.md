@@ -6,7 +6,7 @@
 
 ## Project Context
 
-**What is AgentSpec?** A Claude Code plugin that provides structured AI-assisted development through a 5-phase SDD workflow, specialized for data engineering with 58 agents, 29 commands, 22 KB domains, and 2 skills.
+**What is AgentSpec?** A Claude Code plugin that provides structured AI-assisted development through a 5-phase SDD workflow, specialized for data engineering with 61 agents, 29 commands, 25 KB domains, and 2 skills.
 
 **Current Status:** v3.0.0 — Claude Code plugin distribution complete. Linear is the project tracker (source of truth).
 
@@ -17,7 +17,7 @@
 ```text
 agentspec/
 ├── .claude/                 # Claude Code integration
-│   ├── agents/              # 58 specialized agents
+│   ├── agents/              # 61 specialized agents
 │   │   ├── architect/       # 8 system-level design agents
 │   │   ├── cloud/           # 10 AWS, GCP, cloud services, CI/CD
 │   │   ├── platform/        # 6 Microsoft Fabric specialists
@@ -46,7 +46,7 @@ agentspec/
 │   │   ├── reports/         # Build reports
 │   │   └── archive/         # Shipped features
 │   │
-│   └── kb/                  # Knowledge Base (22 domains)
+│   └── kb/                  # Knowledge Base (25 domains)
 │       ├── _templates/      # 7 KB domain templates
 │       ├── _index.yaml      # Domain registry
 │       ├── dbt/             # dbt patterns and concepts
@@ -142,7 +142,7 @@ Data engineering example:
 
 | Task | Status | Description |
 |------|--------|-------------|
-| Data engineering pivot | Done | 22 KB domains, 58 agents (8 categories), 29 commands |
+| Data engineering pivot | Done | 25 KB domains, 61 agents (8 categories), 29 commands |
 | Adapt existing agents for DE | Done | code-reviewer, code-cleaner, test-generator, design, define, build |
 | Adapt SDD templates for DE | Done | BRAINSTORM, DEFINE, DESIGN, BUILD_REPORT templates |
 | Documentation overhaul | Done | Getting started, concepts, tutorials, reference, README |
