@@ -253,30 +253,48 @@ Context:
     "build": """\
 You are an AgentSpec SDD build executor working inside a GitHub issue.
 
-Based on the full specification below, generate ALL the files needed for this feature.
+Based on the full specification below, generate a BUILD PLAN with file list and metadata.
 
-IMPORTANT: Respond with ONLY a valid JSON object in this exact format — no markdown, no explanation, just the JSON:
+IMPORTANT: Respond with ONLY a valid JSON object — no markdown, no explanation, just the JSON:
 
 {{
   "branch": "feat/short-feature-name",
   "pr_title": "feat: short description",
   "pr_body": "## Summary\\n\\n- bullet 1\\n- bullet 2\\n\\nCloses #{issue_number}",
-  "build_summary": "2-3 sentence summary of what was built",
+  "build_summary": "2-3 sentence summary of what will be built",
   "files": [
     {{
       "path": "relative/path/to/file.ext",
-      "content": "full file content here"
+      "description": "What this file does (1-2 sentences)",
+      "language": "python|yaml|json|markdown|etc"
     }}
   ]
 }}
 
 Rules:
 - "branch" must start with feat/, fix/, or chore/
-- "files" must contain ALL files needed — complete, production-ready content
-- No placeholder content — every file must be fully implemented
+- "files" must list ALL files but only path + description + language (NOT content yet)
 - "pr_body" must reference the issue number: {issue_number}
+- This is a PLAN phase — content comes after in separate calls
 
 Context:
+{context}
+""",
+
+    "build_content": """\
+You are an AgentSpec SDD build executor generating file content.
+
+Generate the COMPLETE, production-ready content for this single file.
+
+File metadata:
+- Path: {file_path}
+- Language: {language}
+- Context: {file_context}
+
+Return ONLY the file content — no markdown fences, no explanations, no "Here's the file:" prefix.
+The content must be complete and ready to write to disk as-is.
+
+Specification context:
 {context}
 """,
 
@@ -484,85 +502,80 @@ def create_pr(target_repo: str, branch: str, base: str, title: str, body: str) -
 
 
 def execute_build(context: str, target_repo: str) -> str:
-    prompt = PROMPTS["build"].format(
+    """Two-phase build: Phase 1 = plan, Phase 2 = generate content for each file"""
+
+    # PHASE 1: Generate build plan (file list only, no content)
+    print("Phase 1: Generating build plan...")
+    plan_prompt = PROMPTS["build"].format(
         context=context,
         issue_number=ISSUE_NUMBER,
     )
-
-    print("Calling Claude for build spec...")
-    raw = call_claude(prompt, max_tokens=4096)  # Reduced from 8192
-
-    # Strip markdown code fences if present
-    raw = re.sub(r"^```(?:json)?\s*", "", raw.strip())
-    raw = re.sub(r"\s*```$", "", raw.strip())
+    raw_plan = call_claude(plan_prompt, max_tokens=2048)
+    raw_plan = re.sub(r"^```(?:json)?\s*", "", raw_plan.strip())
+    raw_plan = re.sub(r"\s*```$", "", raw_plan.strip())
 
     try:
-        spec = json.loads(raw)
+        plan = json.loads(raw_plan)
     except json.JSONDecodeError as e:
-        # Try to fix incomplete JSON by finding last valid object
-        print(f"JSON parse failed: {e}. Attempting recovery...")
-        # Find the last complete file object
-        files_match = re.findall(r'"files":\s*\[(.*?)\]', raw, re.DOTALL)
-        if files_match:
-            # Extract completed files only
-            files_str = files_match[0]
-            file_objects = re.findall(r'\{[^}]*"path"[^}]*"content"[^}]*\}', files_str, re.DOTALL)
-            if file_objects:
-                # Build minimal spec with what we have
-                spec = {
-                    "branch": re.search(r'"branch":\s*"([^"]+)"', raw),
-                    "pr_title": re.search(r'"pr_title":\s*"([^"]+)"', raw),
-                    "pr_body": re.search(r'"pr_body":\s*"([^"]+)"', raw),
-                    "build_summary": "Build spec truncated but files recovered",
-                    "files": [json.loads(f + "}") for f in [f.rstrip(",") for f in file_objects] if f.rstrip(",")]
-                }
-                # Extract group values if regex matches found
-                for key in ["branch", "pr_title", "pr_body"]:
-                    match = spec[key]
-                    if match:
-                        spec[key] = match.group(1) if hasattr(match, 'group') else match
-                if spec["files"]:
-                    print(f"Recovered {len(spec['files'])} files from incomplete JSON")
-                else:
-                    raise ValueError(f"Could not recover files from JSON: {e}\n\nRaw (first 500 chars):\n{raw[:500]}")
-            else:
-                raise ValueError(f"Could not parse JSON and no complete files found: {e}")
-        else:
-            raise ValueError(f"Could not parse JSON: {e}\n\nRaw (first 500 chars):\n{raw[:500]}")
+        raise ValueError(f"Build plan JSON invalid: {e}\n\nRaw:\n{raw_plan[:300]}")
 
-    branch = spec["branch"]
-    pr_title = spec["pr_title"]
-    pr_body = spec["pr_body"]
-    files = spec["files"]
-    build_summary = spec.get("build_summary", "")
+    branch = plan["branch"]
+    pr_title = plan["pr_title"]
+    pr_body = plan["pr_body"]
+    file_specs = plan["files"]  # {path, description, language}
+    build_summary = plan.get("build_summary", "")
 
     print(f"Target repo: {target_repo}")
     print(f"Branch: {branch}")
-    print(f"Files to create: {len(files)}")
+    print(f"Files planned: {len(file_specs)}")
 
     default_branch = get_default_branch(target_repo)
     base_sha = get_branch_sha(target_repo, default_branch)
     create_branch(target_repo, branch, base_sha)
 
-    for i, f in enumerate(files):
-        print(f"  Creating {f['path']} ({i+1}/{len(files)})")
-        create_file(
-            target_repo,
-            f["path"],
-            f["content"],
-            branch,
-            f"feat: add {f['path']}",
+    # PHASE 2: Generate content for each file (separate API calls)
+    created_files = []
+    for i, spec in enumerate(file_specs):
+        file_path = spec["path"]
+        language = spec.get("language", "text")
+        description = spec.get("description", "")
+
+        print(f"  [{i+1}/{len(file_specs)}] Generating content for {file_path}...")
+
+        content_prompt = PROMPTS["build_content"].format(
+            file_path=file_path,
+            language=language,
+            file_context=description,
+            context=context[:3000],  # Reduced context for content generation
         )
-        time.sleep(0.3)  # avoid rate limiting
+
+        try:
+            content = call_claude(content_prompt, max_tokens=2048)
+            content = content.strip()
+
+            create_file(
+                target_repo,
+                file_path,
+                content,
+                branch,
+                f"feat: add {file_path}",
+            )
+            created_files.append(file_path)
+            print(f"    ✅ {file_path}")
+            time.sleep(0.3)  # avoid rate limiting
+
+        except Exception as e:
+            print(f"    ⚠️ Failed to generate {file_path}: {e}")
+            # Continue with other files instead of failing entirely
 
     pr_url = create_pr(target_repo, branch, default_branch, pr_title, pr_body)
     print(f"PR created: {pr_url}")
 
-    file_list = "\n".join(f"- `{f['path']}`" for f in files)
+    file_list = "\n".join(f"- `{f}`" for f in created_files)
     return (
         f"## 🔨 BUILD EXECUTED: {ISSUE_TITLE}\n\n"
         f"{build_summary}\n\n"
-        f"### Files created ({len(files)})\n{file_list}\n\n"
+        f"### Files created ({len(created_files)}/{len(file_specs)})\n{file_list}\n\n"
         f"### Pull Request\n"
         f"➡️ **[{pr_title}]({pr_url})**\n\n"
         f"Review and merge the PR in `{target_repo}` to complete this phase."
