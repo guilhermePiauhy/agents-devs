@@ -251,28 +251,37 @@ Context:
 """,
 
     "build": """\
-Generate a BUILD PLAN as JSON ONLY. No explanations.
+Generate a BUILD PLAN as JSON ONLY from the DESIGN specification.
 
 {{
   "branch": "feat/feature-name",
   "pr_title": "feat: description",
-  "pr_body": "## Summary\\n- item 1\\n- item 2\\n\\nCloses #{issue_number}",
+  "pr_body": "## Summary\\n- Implements FR-001, FR-002\\n- Resolves issue #{issue_number}",
   "files": [
-    {{"path": "file1.ext", "lang": "py"}},
-    {{"path": "file2.yml", "lang": "yaml"}}
+    {{"path": "docker-compose.yml", "lang": "yaml"}},
+    {{"path": "config/app.conf", "lang": "ini"}}
   ]
 }}
 
-Design: {context}
+DESIGN SPECIFICATION:
+{context}
+
+Rules:
+- Only respond with valid JSON object, nothing else
+- List files from "Files to Create" section of DESIGN
+- Extract branch from DESIGN or suggest logical name
 """,
 
     "build_content": """\
-Generate COMPLETE file content ONLY. No explanations or fences.
+Generate the complete, production-ready file content based on the DESIGN.
 
-File: {file_path} ({language})
+File: {file_path}
+Language: {language}
 
-From specification:
+DESIGN SPECIFICATION (for reference):
 {context}
+
+Output ONLY the file content - no markdown fences, no explanations.
 """,
 
     "ship": """\
@@ -482,12 +491,12 @@ def execute_build(context: str, target_repo: str) -> str:
     """Two-phase build: Phase 1 = plan, Phase 2 = generate content for each file"""
 
     # PHASE 1: Generate build plan (file list only, no content)
-    print("Phase 1: Generating build plan...")
+    print("Phase 1: Generating build plan from DESIGN...")
     plan_prompt = PROMPTS["build"].format(
-        context=context[:2000],  # Drastically reduced context
+        context=context,  # Full DESIGN document
         issue_number=ISSUE_NUMBER,
     )
-    raw_plan = call_claude(plan_prompt, max_tokens=1024)  # Even smaller
+    raw_plan = call_claude(plan_prompt, max_tokens=1500)  # Enough for file list
     raw_plan = re.sub(r"^```(?:json)?\s*", "", raw_plan.strip())
     raw_plan = re.sub(r"\s*```$", "", raw_plan.strip())
 
@@ -521,11 +530,11 @@ def execute_build(context: str, target_repo: str) -> str:
         content_prompt = PROMPTS["build_content"].format(
             file_path=file_path,
             language=language,
-            context=context[:1500],  # Minimal context
+            context=context,  # Full DESIGN for each file
         )
 
         try:
-            content = call_claude(content_prompt, max_tokens=1024)  # Smaller
+            content = call_claude(content_prompt, max_tokens=2048)  # Enough for file content
             content = content.strip()
 
             create_file(
@@ -560,6 +569,38 @@ def execute_build(context: str, target_repo: str) -> str:
 # ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
+def get_design_file_path() -> str:
+    """Returns path to design document for this issue."""
+    # Sanitize title to filename (replace spaces/special chars)
+    safe_title = re.sub(r'[^a-zA-Z0-9_-]', '_', ISSUE_TITLE)[:50]
+    return f".claude/sdd/features/DESIGN_{safe_title}_#{ISSUE_NUMBER}.md"
+
+
+def save_design_doc(result: str):
+    """Save design document to repo for later use by build phase."""
+    try:
+        design_path = get_design_file_path()
+        # This would need to be committed to the repo
+        # For now, we just mark it in the comment for manual save
+        print(f"Design should be saved to: {design_path}")
+    except Exception as e:
+        print(f"Warning: Could not save design: {e}")
+
+
+def load_design_context() -> str:
+    """Try to load DESIGN doc from repo if it exists."""
+    design_path = get_design_file_path()
+    try:
+        # Try to read from workspace
+        with open(design_path, 'r') as f:
+            content = f.read()
+            print(f"Loaded design from {design_path}")
+            return content
+    except FileNotFoundError:
+        print(f"Design file not found at {design_path}")
+        return ""
+
+
 def main():
     print(f"Phase: {PHASE} | Label: {LABEL_NAME} | Issue: #{ISSUE_NUMBER} | Repo: {REPO}")
 
@@ -588,6 +629,13 @@ def main():
             )
             sys.exit(1)
 
+        # For build phase, try to load design doc for rich context
+        if PHASE == "build":
+            design_context = load_design_context()
+            if design_context:
+                context = design_context  # Use design as primary context
+            # Fallback to issue context if no design found
+
         result = execute_build(context, target_repo)
         post_comment(result + footer)
 
@@ -600,6 +648,15 @@ def main():
         print("Calling Claude API...")
         result = call_claude(prompt)
         post_comment(result + footer)
+
+        # After design phase, suggest saving to file
+        if PHASE == "design":
+            save_design_doc(result)
+            post_comment(
+                f"\n\n💾 **Next step:** Save this DESIGN doc to:\n"
+                f"```\n{get_design_file_path()}\n```\n"
+                f"Then add the label `sdd:build` to use it for code generation."
+            )
 
         # Close issue on final phases
         if PHASE in ("ship", "close"):
