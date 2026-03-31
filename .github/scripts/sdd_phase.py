@@ -284,6 +284,116 @@ DESIGN SPECIFICATION (for reference):
 Output ONLY the file content - no markdown fences, no explanations.
 """,
 
+    "review_architecture": """\
+You are an expert software architect reviewing a DESIGN document for a GitHub issue.
+
+Read the DESIGN below and provide a DETAILED review from architecture perspective:
+
+## 🏗️ ARCHITECTURE REVIEW
+
+### Strengths
+- (2-3 things done well)
+
+### Concerns
+- (2-3 potential issues or improvements)
+
+### Recommendations
+- (1-2 specific improvements for scalability, maintainability, modularity)
+
+### Verdict
+(Is this architecture sound? Any showstoppers?)
+
+---
+DESIGN TO REVIEW:
+{context}
+""",
+
+    "review_security": """\
+You are an expert security engineer reviewing a DESIGN document for a GitHub issue.
+
+Read the DESIGN below and provide a DETAILED security review:
+
+## 🔒 SECURITY REVIEW
+
+### Strengths
+- (2-3 security best practices observed)
+
+### Risks
+- (2-3 potential security issues)
+
+### Mitigations
+- (specific fixes for each risk)
+
+### Compliance Notes
+- (GDPR, PCI-DSS, or relevant standards if applicable)
+
+### Verdict
+(Are there security showstoppers? Or is this secure?)
+
+---
+DESIGN TO REVIEW:
+{context}
+""",
+
+    "review_devops": """\
+You are an expert DevOps/Infrastructure engineer reviewing a DESIGN document.
+
+Read the DESIGN below and provide a DETAILED review from operations perspective:
+
+## 🚀 DEVOPS REVIEW
+
+### Strengths
+- (2-3 deployable/operational strengths)
+
+### Challenges
+- (2-3 operational concerns: deployment, scaling, monitoring, etc.)
+
+### Improvements
+- (specific changes for better operability)
+
+### Deployment Strategy
+- (how should this be deployed? what's the rollout plan?)
+
+### Verdict
+(Is this operationally sound? Any deployment showstoppers?)
+
+---
+DESIGN TO REVIEW:
+{context}
+""",
+
+    "consolidate_reviews": """\
+You are a technical lead consolidating 3 expert reviews into an IMPROVED DESIGN.
+
+Given the original DESIGN and 3 review comments below, produce an IMPROVED DESIGN that:
+1. Incorporates all valid suggestions
+2. Resolves security/architecture/devops concerns
+3. Maintains the original intent and scope
+4. Is production-ready
+
+Output the COMPLETE IMPROVED DESIGN document in markdown format.
+
+---
+ORIGINAL DESIGN:
+{design}
+
+---
+ARCHITECTURE REVIEW:
+{arch_review}
+
+---
+SECURITY REVIEW:
+{sec_review}
+
+---
+DEVOPS REVIEW:
+{devops_review}
+
+---
+
+Now generate the IMPROVED DESIGN incorporating the best insights from all three reviews.
+""",
+
     "ship": """\
 You are an AgentSpec SDD ship specialist working inside a GitHub issue.
 
@@ -487,6 +597,55 @@ def create_pr(target_repo: str, branch: str, base: str, title: str, body: str) -
     return data["html_url"]
 
 
+def execute_review(context: str) -> str:
+    """Execute 3-agent review + consolidation of DESIGN"""
+    print("Starting 3-agent design review...")
+
+    # Get reviews from 3 specialized agents
+    print("  1/3 Architecture review...")
+    arch_review = call_claude(
+        PROMPTS["review_architecture"].format(context=context),
+        max_tokens=1500
+    )
+
+    print("  2/3 Security review...")
+    sec_review = call_claude(
+        PROMPTS["review_security"].format(context=context),
+        max_tokens=1500
+    )
+
+    print("  3/3 DevOps review...")
+    devops_review = call_claude(
+        PROMPTS["review_devops"].format(context=context),
+        max_tokens=1500
+    )
+
+    # Consolidate reviews into improved design
+    print("  Consolidating reviews into improved design...")
+    consolidation_prompt = PROMPTS["consolidate_reviews"].format(
+        design=context,
+        arch_review=arch_review,
+        sec_review=sec_review,
+        devops_review=devops_review,
+    )
+
+    improved_design = call_claude(consolidation_prompt, max_tokens=4096)
+
+    # Post all reviews + improved design as comments
+    summary = (
+        f"## 📋 DESIGN REVIEW COMPLETE\n\n"
+        f"3 agents have reviewed the DESIGN:\n\n"
+        f"### Architecture Review\n{arch_review}\n\n"
+        f"### Security Review\n{sec_review}\n\n"
+        f"### DevOps Review\n{devops_review}\n\n"
+        f"---\n\n"
+        f"## ✅ IMPROVED DESIGN\n\n{improved_design}\n\n"
+        f"**Next step:** Review the improved design and add label `sdd:build` to proceed with implementation."
+    )
+
+    return summary
+
+
 def execute_build(context: str, target_repo: str) -> str:
     """Two-phase build: Phase 1 = plan, Phase 2 = generate content for each file"""
 
@@ -619,8 +778,17 @@ def main():
     if target_repo:
         footer += f"\n*Target: [{target_repo}](https://github.com/{target_repo})*"
 
+    # Review phase: 3 agents discuss the design
+    if PHASE == "review":
+        design_context = load_design_context()
+        if not design_context:
+            design_context = context  # Fallback to issue context
+
+        result = execute_review(design_context)
+        post_comment(result + footer)
+
     # Phases that generate code and open a PR
-    if PHASE in ("build", "fix"):
+    elif PHASE in ("build", "fix"):
         if not target_repo:
             post_comment(
                 f"❌ **{PHASE.title()} failed:** No `Target Repo` found in this issue.\n\n"
