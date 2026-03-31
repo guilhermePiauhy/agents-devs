@@ -93,14 +93,27 @@ O fluxo é simples: **você cria uma issue, adiciona um label, o agente faz o tr
 
 | Fluxo | Quando usar | Fases | Tempo típico |
 |-------|-------------|-------|--------------|
-| **SDD Feature** | Criar algo novo, feature, melhoria | 5 fases | 30-60 min |
+| **SDD Feature** | Criar algo novo, feature, melhoria | **6 fases** (com review) | 45-90 min |
 | **Bugfix** | Corrigir problema, patch, hotfix | 3 fases | 10-20 min |
 
 ---
 
 ## Novo Feature (SDD)
 
-O fluxo SDD tem 5 fases estruturadas. Cada fase gera um documento que fica registrado na issue.
+O fluxo SDD tem **6 fases estruturadas**. Após o design, 3 agentes discutem a melhor abordagem antes da implementação. Você só participa se quiser sugerir melhorias.
+
+### Fluxo Completo
+
+```
+sdd:brainstorm → sdd:define → sdd:design → sdd:review → sdd:build → sdd:ship
+   (Ideia)      (Requisitos)  (Arquitetura) (Consenso)  (Código)    (Entrega)
+```
+
+A fase **`sdd:review`** é automática:
+- 3 agentes analisam o DESIGN (Arquitetura, Segurança, DevOps)
+- Cada um dá suas recomendações
+- Consolida tudo em um DESIGN melhorado
+- **Você aprova ou ajusta** antes do build
 
 ### Passo a passo
 
@@ -158,37 +171,33 @@ Você adiciona o label **`sdd:design`** → O agente:
 - Documenta decisões de design
 - Especifica dependências e integrações
 
-**Exemplo de saída:**
-```
-## Arquitetura
-
-Containers:
-- odoo:17 (aplicação)
-- postgres:15 (banco)
-- nginx:latest (reverse proxy)
-- redis:7 (cache)
-
-Volumes:
-- odoo_data: dados de produção
-- postgres_data: banco persistente
-
-Redes:
-- internal: apenas para containers
-- frontend: nginx exposto
-
-Arquivos a criar:
-- docker-compose.yml (dev)
-- docker-compose.prod.yml (produção)
-- .env.example
-- nginx.conf
-- ... mais arquivos
-```
-
-**Você faz:** Revisar arquitetura, validar abordagem, sugerir mudanças se necessário
+**Você faz:** Lê o design e pode salvar em arquivo (para usar com review)
 
 ---
 
-#### **Fase 3: Build** 🔨
+#### **Fase 2.5: Review** 📋 ⭐ NOVO
+Você adiciona o label **`sdd:review`** → **3 agentes analisam automaticamente**:
+
+1. **🏗️ Arquiteto** — escalabilidade, padrões, modularidade
+2. **🔒 Especialista em Segurança** — vulnerabilidades, compliance, proteção de dados
+3. **🚀 DevOps** — deployabilidade, operações, monitoramento
+
+**Cada agente dá recomendações**, depois o sistema **consolida tudo em um DESIGN melhorado**.
+
+**Você faz:** (Opcional) Lê os comentários dos 3 agentes e pode adicionar seu feedback antes do build
+
+**Exemplo:**
+```
+Arquiteto: "Considere usar padrão CQRS para o pipeline"
+Segurança: "Adicione validação de entrada no endpoint /executar"
+DevOps: "Configure health checks nos containers"
+↓
+DESIGN MELHORADO incorpora as 3 sugestões
+```
+
+---
+
+#### **Fase 4: Build** 🔨
 Você adiciona o label **`sdd:build`** → O agente:
 - Gera **todos os arquivos** especificados no design
 - Abre um **PR automaticamente** no Target Repo
@@ -209,7 +218,7 @@ Você adiciona o label **`sdd:build`** → O agente:
 
 ---
 
-#### **Fase 4: Ship** 🚀
+#### **Fase 5: Ship** 🚀
 Você adiciona o label **`sdd:ship`** → O agente:
 - Documenta lições aprendidas
 - Cria um sumário de entrega
@@ -227,13 +236,14 @@ Você adiciona o label **`sdd:ship`** → O agente:
 
 ### Fases do SDD — Resumo
 
-| Label | O que o agente faz | O que você faz |
-|-------|-------------------|----------------|
-| `sdd:brainstorm` | Explora a ideia, lista abordagens, levanta perguntas | Discute, valida direção |
-| `sdd:define` | Requisitos funcionais + não-funcionais estruturados | Valida escopo, responde perguntas |
-| `sdd:design` | Arquitetura técnica, diagrama, lista de arquivos | Aprova a arquitetura |
-| `sdd:build` | Gera código + abre PR no Target Repo | Revisa PR, faz merge |
-| `sdd:ship` | Sumário de entrega + fecha a issue | — |
+| Label | O que acontece | O que você faz |
+|-------|----------------|----------------|
+| `sdd:brainstorm` | Agente explora ideia, lista abordagens | Discute, valida direção |
+| `sdd:define` | Agente gera requisitos estruturados | Valida escopo |
+| `sdd:design` | Agente cria arquitetura técnica | Lê o design |
+| **`sdd:review`** | **3 agentes analisam (arquitetura, segurança, devops)** | **(Opcional) Aprova com feedback** |
+| `sdd:build` | Agente gera código + abre PR | Revisa e faz merge do PR |
+| `sdd:ship` | Agente fecha com sumário de entrega | — |
 
 ---
 
