@@ -251,50 +251,27 @@ Context:
 """,
 
     "build": """\
-You are an AgentSpec SDD build executor working inside a GitHub issue.
-
-Based on the full specification below, generate a BUILD PLAN with file list and metadata.
-
-IMPORTANT: Respond with ONLY a valid JSON object — no markdown, no explanation, just the JSON:
+Generate a BUILD PLAN as JSON ONLY. No explanations.
 
 {{
-  "branch": "feat/short-feature-name",
-  "pr_title": "feat: short description",
-  "pr_body": "## Summary\\n\\n- bullet 1\\n- bullet 2\\n\\nCloses #{issue_number}",
-  "build_summary": "2-3 sentence summary of what will be built",
+  "branch": "feat/feature-name",
+  "pr_title": "feat: description",
+  "pr_body": "## Summary\\n- item 1\\n- item 2\\n\\nCloses #{issue_number}",
   "files": [
-    {{
-      "path": "relative/path/to/file.ext",
-      "description": "What this file does (1-2 sentences)",
-      "language": "python|yaml|json|markdown|etc"
-    }}
+    {{"path": "file1.ext", "lang": "py"}},
+    {{"path": "file2.yml", "lang": "yaml"}}
   ]
 }}
 
-Rules:
-- "branch" must start with feat/, fix/, or chore/
-- "files" must list ALL files but only path + description + language (NOT content yet)
-- "pr_body" must reference the issue number: {issue_number}
-- This is a PLAN phase — content comes after in separate calls
-
-Context:
-{context}
+Design: {context}
 """,
 
     "build_content": """\
-You are an AgentSpec SDD build executor generating file content.
+Generate COMPLETE file content ONLY. No explanations or fences.
 
-Generate the COMPLETE, production-ready content for this single file.
+File: {file_path} ({language})
 
-File metadata:
-- Path: {file_path}
-- Language: {language}
-- Context: {file_context}
-
-Return ONLY the file content — no markdown fences, no explanations, no "Here's the file:" prefix.
-The content must be complete and ready to write to disk as-is.
-
-Specification context:
+From specification:
 {context}
 """,
 
@@ -507,10 +484,10 @@ def execute_build(context: str, target_repo: str) -> str:
     # PHASE 1: Generate build plan (file list only, no content)
     print("Phase 1: Generating build plan...")
     plan_prompt = PROMPTS["build"].format(
-        context=context,
+        context=context[:2000],  # Drastically reduced context
         issue_number=ISSUE_NUMBER,
     )
-    raw_plan = call_claude(plan_prompt, max_tokens=2048)
+    raw_plan = call_claude(plan_prompt, max_tokens=1024)  # Even smaller
     raw_plan = re.sub(r"^```(?:json)?\s*", "", raw_plan.strip())
     raw_plan = re.sub(r"\s*```$", "", raw_plan.strip())
 
@@ -522,7 +499,7 @@ def execute_build(context: str, target_repo: str) -> str:
     branch = plan["branch"]
     pr_title = plan["pr_title"]
     pr_body = plan["pr_body"]
-    file_specs = plan["files"]  # {path, description, language}
+    file_specs = plan["files"]  # {path, lang}
     build_summary = plan.get("build_summary", "")
 
     print(f"Target repo: {target_repo}")
@@ -537,20 +514,18 @@ def execute_build(context: str, target_repo: str) -> str:
     created_files = []
     for i, spec in enumerate(file_specs):
         file_path = spec["path"]
-        language = spec.get("language", "text")
-        description = spec.get("description", "")
+        language = spec.get("lang", "text")
 
         print(f"  [{i+1}/{len(file_specs)}] Generating content for {file_path}...")
 
         content_prompt = PROMPTS["build_content"].format(
             file_path=file_path,
             language=language,
-            file_context=description,
-            context=context[:3000],  # Reduced context for content generation
+            context=context[:1500],  # Minimal context
         )
 
         try:
-            content = call_claude(content_prompt, max_tokens=2048)
+            content = call_claude(content_prompt, max_tokens=1024)  # Smaller
             content = content.strip()
 
             create_file(
