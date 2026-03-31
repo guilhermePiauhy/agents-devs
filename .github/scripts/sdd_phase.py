@@ -102,8 +102,12 @@ def extract_target_repo(text: str) -> str | None:
     return match.group(1).strip() if match else None
 
 
-def build_context() -> tuple[str, str | None]:
-    """Returns (full_context_markdown, target_repo_or_None)"""
+def build_context(max_chars: int = 12000) -> tuple[str, str | None]:
+    """Returns (full_context_markdown, target_repo_or_None)
+
+    Limits context to max_chars to prevent token overflow on large issues.
+    Keeps most recent comments first, then truncates if needed.
+    """
     comments = get_issue_comments()
 
     context = f"# Issue #{ISSUE_NUMBER}: {ISSUE_TITLE}\n\n{ISSUE_BODY}\n\n"
@@ -112,12 +116,19 @@ def build_context() -> tuple[str, str | None]:
 
     if comments:
         context += "---\n\n## Discussion & Previous Documents\n\n"
-        for c in comments:
+        # Reverse to show most recent first
+        for c in reversed(comments[-5:]):  # Only last 5 comments to save space
             author = c["user"]["login"]
             body = c["body"]
-            context += f"### Comment by @{author}\n\n{body}\n\n---\n\n"
+            # Truncate very long comments
+            body_preview = body[:1000] if len(body) > 1000 else body
+            context += f"### Comment by @{author}\n\n{body_preview}\n\n---\n\n"
             if not target_repo:
                 target_repo = extract_target_repo(body)
+
+    # Truncate context if too large
+    if len(context) > max_chars:
+        context = context[:max_chars] + "\n\n[... contexto truncado ...]"
 
     return context, target_repo
 
@@ -479,7 +490,7 @@ def execute_build(context: str, target_repo: str) -> str:
     )
 
     print("Calling Claude for build spec...")
-    raw = call_claude(prompt, max_tokens=8192)
+    raw = call_claude(prompt, max_tokens=4096)  # Reduced from 8192
 
     # Strip markdown code fences if present
     raw = re.sub(r"^```(?:json)?\s*", "", raw.strip())
@@ -488,7 +499,36 @@ def execute_build(context: str, target_repo: str) -> str:
     try:
         spec = json.loads(raw)
     except json.JSONDecodeError as e:
-        raise ValueError(f"Claude did not return valid JSON: {e}\n\nRaw:\n{raw[:500]}")
+        # Try to fix incomplete JSON by finding last valid object
+        print(f"JSON parse failed: {e}. Attempting recovery...")
+        # Find the last complete file object
+        files_match = re.findall(r'"files":\s*\[(.*?)\]', raw, re.DOTALL)
+        if files_match:
+            # Extract completed files only
+            files_str = files_match[0]
+            file_objects = re.findall(r'\{[^}]*"path"[^}]*"content"[^}]*\}', files_str, re.DOTALL)
+            if file_objects:
+                # Build minimal spec with what we have
+                spec = {
+                    "branch": re.search(r'"branch":\s*"([^"]+)"', raw),
+                    "pr_title": re.search(r'"pr_title":\s*"([^"]+)"', raw),
+                    "pr_body": re.search(r'"pr_body":\s*"([^"]+)"', raw),
+                    "build_summary": "Build spec truncated but files recovered",
+                    "files": [json.loads(f + "}") for f in [f.rstrip(",") for f in file_objects] if f.rstrip(",")]
+                }
+                # Extract group values if regex matches found
+                for key in ["branch", "pr_title", "pr_body"]:
+                    match = spec[key]
+                    if match:
+                        spec[key] = match.group(1) if hasattr(match, 'group') else match
+                if spec["files"]:
+                    print(f"Recovered {len(spec['files'])} files from incomplete JSON")
+                else:
+                    raise ValueError(f"Could not recover files from JSON: {e}\n\nRaw (first 500 chars):\n{raw[:500]}")
+            else:
+                raise ValueError(f"Could not parse JSON and no complete files found: {e}")
+        else:
+            raise ValueError(f"Could not parse JSON: {e}\n\nRaw (first 500 chars):\n{raw[:500]}")
 
     branch = spec["branch"]
     pr_title = spec["pr_title"]
